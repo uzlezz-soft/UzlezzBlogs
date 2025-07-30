@@ -2,8 +2,10 @@ using Auth.Api;
 using Auth.Api.Entities;
 using Auth.Api.Interfaces;
 using Auth.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Microservices.Shared;
 
@@ -47,9 +49,22 @@ app.MapPost("/login", async ([FromBody] LoginRequest dto, IUserService userServi
 
 app.MapGet("/avatar/{userName}", async ([FromRoute] string userName, IUserService userService) =>
 {
-    var user = await userService.GetUserByNameAsync(userName);
-    if (user is null) return Results.NotFound();
-    return Results.Ok(new AvatarResponse(user.Avatar, user.AvatarMimeType));
+    var avatar = await userService.GetAvatarAsync(userName);
+    return avatar is null ? Results.NotFound() : Results.Ok(avatar);
+});
+
+app.MapGet("/confirmEmail", [Authorize] async (IUserService userService, HttpContext context, [FromQuery] string token) =>
+{
+    var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    var result = await userService.ConfirmEmailAsync(userId!, token);
+    return result ? Results.Ok() : Results.BadRequest();
+});
+
+app.MapGet("/profile/{userName}", async (IUserService userService, [FromRoute] string userName) =>
+{
+    var profile = await userService.GetProfileAsync(userName);
+    return profile is null ? Results.NotFound() : Results.Ok(profile);
 });
 
 app.Run();

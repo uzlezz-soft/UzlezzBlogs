@@ -1,11 +1,13 @@
 ﻿using Auth.Api.Entities;
 using Auth.Api.Interfaces;
+using Auth.Api.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Microservices.Shared.Configs;
 
 namespace Auth.Api.Services;
@@ -15,36 +17,46 @@ public class UserService : IUserService
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly JwtConfig _config;
-    private readonly AuthDbContext _context;
     private readonly ILogger<UserService> _logger;
 
     public UserService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IOptions<JwtConfig> config,
-        AuthDbContext context,
         ILogger<UserService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _config = config.Value;
-        _context = context;
         _logger = logger;
     }
 
-    public Task<bool> ConfirmEmailAsync(User user, string token, string host)
+    public async Task<bool> ConfirmEmailAsync(string userId, string token)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null) return false;
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        if (!result.Succeeded) return false;
+
+        _logger.LogInformation("{UserName} confirmed email {Email}", user.UserName, user.Email);
+        // TODO: send confirmation email
+
+        return true;
     }
 
-    public Task<User?> GetUserAsync(ClaimsPrincipal claims)
+    public async Task<Avatar?> GetAvatarAsync(string userName)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user is null) return null;
+        return new Avatar(user.Avatar, user.AvatarMimeType);
     }
 
-    public Task<User?> GetUserByIdAsync(string userId) => _userManager.FindByIdAsync(userId);
-
-    public Task<User?> GetUserByNameAsync(string userName) => _userManager.FindByNameAsync(userName);
+    public async Task<UserProfile?> GetProfileAsync(string userName)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user is null) return null;
+        return user.ToProfile();
+    }
 
     public async Task<IEnumerable<IdentityError>?> RegisterAsync(string userName, string email, string password)
     {
@@ -88,6 +100,9 @@ public class UserService : IUserService
 
     public async Task SignOutAsync()
     {
+        // TODO: maybe add user's token to db list of invalid tokens
+        // But how would other microservices check it?
+        // Message broker notification?
         await _signInManager.SignOutAsync();
     }
 }
