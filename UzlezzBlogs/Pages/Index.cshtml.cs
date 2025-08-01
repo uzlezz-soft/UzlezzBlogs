@@ -1,20 +1,27 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using UzlezzBlogs.Core.Dto;
+using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel(IPostService postService) : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        public PostPreview[] Posts { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        [BindProperty(SupportsGet = true, Name = "Page")]
+        public int PageIndex { get; set; } = 1;
+
+        public int TotalPages { get; set; } = 1;
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            _logger = logger;
-        }
+            var list = await postService.GetLatestPosts(PageIndex);
+            if (PageIndex > list.TotalPages && list.TotalPages > 0)
+                return LocalRedirect($"/?Page={list.TotalPages}");
 
-        public void OnGet()
-        {
+            Posts = list.Posts;
+            TotalPages = list.TotalPages;
 
+            return Page();
         }
     }
 }

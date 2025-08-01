@@ -20,3 +20,15 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.post-clickable {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.justified-content {
+    text-align: justify;
+    text-justify: inter-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}

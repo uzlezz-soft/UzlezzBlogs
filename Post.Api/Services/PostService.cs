@@ -189,7 +189,6 @@ public class PostService : IPostService
     {
         var post = await _context.Posts
             .Include(p => p.Ratings)
-            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == postId);
         if (post == null) return null;
 

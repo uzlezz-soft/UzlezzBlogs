@@ -1,30 +1,37 @@
-﻿@page
-@model IndexModel
+﻿@page "{userName}"
+@model UzlezzBlogs.Pages.ProfileModel
 @{
-    ViewData["Title"] = $"Latest Posts | Page {Model.PageIndex}";
+    ViewData["Title"] = $"{Model.Profile.UserName} posts | page {Model.PageIndex}";
 }
 
 <div class="container py-5" style="max-width: 800px;">
-    <h2 class="text-center">Recent posts</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+            <img src="/avatar/@Model.Profile.UserName"
+                 class="rounded-circle mb-3"
+                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;" />
+
+            <h3 class="card-title">@Model.Profile.UserName</h3>
+
+            <div class="mt-3 text-start" style="white-space: normal;">
+                @Html.Raw(Model.Profile.DescriptionHtml)
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3 text-center">Posts by @Model.Profile.UserName</h4>
+
     @foreach (var post in Model.Posts)
     {
         <div class="card mb-4 border-bottom shadow-sm rounded post-clickable"
              data-url="/post/@post.Url">
 
             <div class="card-body">
-                <h2 class="card-title h4">@post.Title</h2>
+                <h5 class="card-title">@post.Title</h5>
 
-                <p class="card-text mt-3 text-secondary">
-                    @post.Description
-                </p>
+                <p class="card-text text-secondary">@post.Description</p>
 
-                <div class="d-flex justify-content-between text-muted small mt-4">
-                    <div class="d-flex align-items-center">
-                        <img src="/Avatar/@post.User" alt="avatar"
-                             class="rounded-circle me-2"
-                             style="width: 32px; height: 32px; object-fit: cover;" />
-                        <span>@(post.User ?? "[deleted]")</span>
-                    </div>
+                <div class="d-flex justify-content-between text-muted small mt-3">
                     <span class="utc-date-only" data-utc="@post.CreatedDate.ToString("o")"></span>
                 </div>
             </div>
@@ -41,11 +48,11 @@
         <ul class="pagination justify-content-center">
 
             <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
-                <a class="page-link" href="/?Page=@(Model.PageIndex - 1)" tabindex="-1">Previous</a>
+                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@(Model.PageIndex - 1)" tabindex="-1">Previous</a>
             </li>
 
             <li class="page-item @(Model.PageIndex == 1 ? "active" : "")">
-                <a class="page-link" href="/?Page=1">1</a>
+                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=1">1</a>
             </li>
 
             @if (startPage > 2)
@@ -58,7 +65,7 @@
                 if (i != 1 && i != Model.TotalPages)
                 {
                     <li class="page-item @(i == Model.PageIndex ? "active" : "")" aria-current="@(i == Model.PageIndex ? "page" : null)">
-                        <a class="page-link" href="/?Page=@i">@i</a>
+                        <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@i">@i</a>
                     </li>
                 }
             }
@@ -71,12 +78,12 @@
             @if (Model.TotalPages > 1)
             {
                 <li class="page-item @(Model.PageIndex == Model.TotalPages ? "active" : "")">
-                    <a class="page-link" href="/?Page=@Model.TotalPages">@Model.TotalPages</a>
+                    <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@Model.TotalPages">@Model.TotalPages</a>
                 </li>
             }
 
             <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="/?Page=@(Model.PageIndex + 1)">Next</a>
+                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@(Model.PageIndex + 1)">Next</a>
             </li>
         </ul>
     </nav>
