@@ -16,6 +16,6 @@ public static class BlogPostMapping
         new PostContent(post.Title, post.Description, post.Content, post.HtmlContent, post.UserName);
 
     public static PostDetails ToPostDetails(this BlogPost post, string? requestingUserId) =>
-        new PostDetails(post.Title, post.Url, post.HtmlContent, post.CreatedDate, post.UserName, post.ViewCount,
+        new PostDetails(post.Id, post.Title, post.Url, post.HtmlContent, post.CreatedDate, post.UserName, post.ViewCount,
             post.Comments.Count, requestingUserId is null ? null : post.Ratings.First(x => x.UserId == requestingUserId).IsUpvote);
 }

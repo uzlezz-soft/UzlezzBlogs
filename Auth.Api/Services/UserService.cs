@@ -2,6 +2,7 @@
 using Auth.Api.Interfaces;
 using Auth.Api.Mapping;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,17 +18,20 @@ public class UserService : IUserService
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly JwtConfig _config;
+    private readonly AuthDbContext _context;
     private readonly ILogger<UserService> _logger;
 
     public UserService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IOptions<JwtConfig> config,
+        AuthDbContext context,
         ILogger<UserService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _config = config.Value;
+        _context = context;
         _logger = logger;
     }
 
@@ -46,16 +50,22 @@ public class UserService : IUserService
 
     public async Task<Avatar?> GetAvatarAsync(string userName)
     {
-        var user = await _userManager.FindByNameAsync(userName);
-        if (user is null) return null;
-        return new Avatar(user.Avatar, user.AvatarMimeType);
+        userName = _userManager.NormalizeName(userName);
+
+        return await _context.Users
+            .Where(u => u.NormalizedUserName == userName)
+            .Select(u => new Avatar(u.Avatar, u.AvatarMimeType))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<UserProfile?> GetProfileAsync(string userName)
     {
-        var user = await _userManager.FindByNameAsync(userName);
-        if (user is null) return null;
-        return user.ToProfile();
+        userName = _userManager.NormalizeName(userName);
+
+        return await _context.Users
+            .Where(u => u.NormalizedUserName == userName)
+            .Select(u => u.ToProfile())
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<IdentityError>?> RegisterAsync(string userName, string email, string password)

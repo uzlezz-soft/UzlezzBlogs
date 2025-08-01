@@ -30,14 +30,11 @@ public class PostService : IPostService
         _logger = logger;
     }
 
-    public async Task<PostComment?> AddCommentAsync(int postId, string userId, string userName, string markdownContent)
+    public async Task<PostComment?> AddCommentAsync(string postId, string userId, string userName, string markdownContent)
     {
         var post = await _context.Posts
             .Include(p => p.Comments)
-            .FirstOrDefaultAsync(p => p.Id == postId);
-
-        if (post == null) throw new Exception("Post not found");
-
+            .FirstOrDefaultAsync(p => p.Id == postId) ?? throw new Exception("Post not found");
         var comment = new Comment
         {
             PostId = post.Id,
@@ -60,12 +57,14 @@ public class PostService : IPostService
     public async Task<PostPreview> CreatePostAsync(string title, string description, string content, string userId, string userName)
     {
         var totalPosts = await _context.Posts.CountAsync();
+        title = title.Trim();
         var url = _urlGenerator.GenerateUrl(title, totalPosts + 1);
 
         var post = new BlogPost
         {
+            Id = Guid.NewGuid().ToString(),
             Title = title,
-            Description = description,
+            Description = description.Trim(),
             Content = content,
             HtmlContent = _htmlGenerator.GenerateHtml(content), 
             Url = url,
@@ -83,7 +82,7 @@ public class PostService : IPostService
         return post.ToPostPreview();
     }
 
-    public async Task<bool> EditPostAsync(string userId, int id, string description, string content)
+    public async Task<bool> EditPostAsync(string userId, string id, string description, string content)
     {
         var post = await _context.Posts
             .Where(post => post.Id == id && post.UserId == userId)
@@ -138,7 +137,7 @@ public class PostService : IPostService
         return (posts, totalPages);
     }
 
-    public Task<PostContent?> GetPostContentByIdAsync(int id, string userId)
+    public Task<PostContent?> GetPostContentByIdAsync(string id, string userId)
     {
         return _context.Posts
             .Where(p => p.Id == id && p.UserId == userId)
@@ -186,10 +185,11 @@ public class PostService : IPostService
         return (posts, totalPages);
     }
 
-    public async Task<PostRatings?> RatePostAsync(int postId, string userId, bool isUpvote)
+    public async Task<PostRatings?> RatePostAsync(string postId, string userId, bool isUpvote)
     {
         var post = await _context.Posts
             .Include(p => p.Ratings)
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == postId);
         if (post == null) return null;
 
@@ -221,7 +221,7 @@ public class PostService : IPostService
         return new PostRatings(upvotes, downvotes, post.ViewCount);
     }
 
-    public async Task<PostComment[]?> GetPostCommentsAsync(int id, int skip, int take)
+    public async Task<PostComment[]?> GetPostCommentsAsync(string id, int skip, int take)
     {
         var post = await _context.Posts
             .Include(p => p.Comments)

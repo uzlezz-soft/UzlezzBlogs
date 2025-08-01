@@ -2,7 +2,7 @@
 
 public class PostRating
 {
-    public required int PostId { get; set; }
+    public required string PostId { get; set; }
     public virtual BlogPost Post { get; set; }
 
     public required string UserId { get; set; }

@@ -60,14 +60,14 @@ app.MapGet("/details/{url}", async (IPostService postService, HttpContext contex
     return Results.Ok(post);
 });
 
-app.MapGet("/details/{id}/comments", async (IPostService postService, [FromRoute] int id,
+app.MapGet("/details/{id}/comments", async (IPostService postService, [FromRoute] string id,
     [FromQuery] int skip = 0, [FromQuery] int take = 50) =>
 {
     var comments = await postService.GetPostCommentsAsync(id, skip, take);
     return comments is null ? Results.BadRequest() : Results.Ok(comments);
 });
 
-app.MapGet("/raw/{id}", [Authorize] async (IPostService postService, HttpContext context, [FromRoute] int id) =>
+app.MapGet("/raw/{id}", [Authorize] async (IPostService postService, HttpContext context, [FromRoute] string id) =>
 {
     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var post = await postService.GetPostContentByIdAsync(id, userId!);
@@ -80,7 +80,7 @@ app.MapGet("/preview", [Authorize] (IPostService postService, [FromQuery] string
 });
 
 app.MapPost("/rate/{postId}/{rating}", [Authorize] async (IPostService postService, HttpContext context,
-    [FromRoute] int postId, [FromRoute] int rating) =>
+    [FromRoute] string postId, [FromRoute] int rating) =>
 {
     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -89,13 +89,20 @@ app.MapPost("/rate/{postId}/{rating}", [Authorize] async (IPostService postServi
 });
 
 app.MapPost("/comment/{postId}", [Authorize] async (IPostService postService, HttpContext context,
-    [FromRoute] int postId, [FromQuery] string content) =>
+    [FromRoute] string postId, [FromQuery] string content) =>
 {
     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var userName = context.User.FindFirst(ClaimTypes.Name)?.Value;
 
-    var comment = await postService.AddCommentAsync(postId, userId!, userName!, content);
-    return comment is null ? Results.BadRequest() : Results.Ok(comment);
+    try
+    {
+        var comment = await postService.AddCommentAsync(postId, userId!, userName!, content);
+        return comment is null ? Results.BadRequest() : Results.Ok(comment);
+    }
+    catch
+    {
+        return Results.NotFound();
+    }
 });
 
 app.MapPost("/create", [Authorize] async (IPostService postService, HttpContext context, [FromBody] PostCreateRequest request) =>

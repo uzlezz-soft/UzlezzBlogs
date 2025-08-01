@@ -3,13 +3,13 @@
 public record PostPreview(string Title, string Description, string Url, DateTime CreatedDate, string User);
 public record RatedPostPreview(string Title, string Description, string Url, DateTime CreatedDate, bool IsUpvote, string User);
 public record PostContent(string Title, string Description, string Content, string HtmlContent, string User);
-public record PostDetails(string Title, string Url, string HtmlContent, DateTime CreatedDate, string User, int Views, int CommentCount, bool? Rating);
+public record PostDetails(string Id ,string Title, string Url, string HtmlContent, DateTime CreatedDate, string User, int Views, int CommentCount, bool? Rating);
 
 public record PostPreviewList(PostPreview[] Posts, int TotalPages);
 public record RatedPostPreviewList(RatedPostPreview[] Posts, int TotalPages);
 
 public record PostCreateRequest(string Title, string Description, string Content);
-public record PostEditRequest(int Id, string Description, string Content);
+public record PostEditRequest(string Id, string Description, string Content);
 
 public record PostRatings(int Upvotes, int Downvotes, int Views);
 
