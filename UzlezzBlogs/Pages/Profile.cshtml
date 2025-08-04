@@ -1,4 +1,5 @@
 ﻿@page "{userName}"
+@using UzlezzBlogs.Pages.Shared
 @model UzlezzBlogs.Pages.ProfileModel
 @{
     ViewData["Title"] = $"{Model.Profile.UserName} posts | page {Model.PageIndex}";
@@ -38,55 +39,12 @@
         </div>
     }
 
-    @{
-        int maxPagesToShow = 5;
-        int startPage = Math.Max(Model.PageIndex - maxPagesToShow, 1);
-        int endPage = Math.Min(Model.PageIndex + maxPagesToShow, Model.TotalPages);
-    }
-
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
-                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@(Model.PageIndex - 1)" tabindex="-1">Previous</a>
-            </li>
-
-            <li class="page-item @(Model.PageIndex == 1 ? "active" : "")">
-                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=1">1</a>
-            </li>
-
-            @if (startPage > 2)
-            {
-                <li class="page-item disabled"><span class="page-link">...</span></li>
-            }
-
-            @for (int i = startPage; i <= endPage; i++)
-            {
-                if (i != 1 && i != Model.TotalPages)
-                {
-                    <li class="page-item @(i == Model.PageIndex ? "active" : "")" aria-current="@(i == Model.PageIndex ? "page" : null)">
-                        <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@i">@i</a>
-                    </li>
-                }
-            }
-
-            @if (endPage < Model.TotalPages - 1)
-            {
-                <li class="page-item disabled"><span class="page-link">...</span></li>
-            }
-
-            @if (Model.TotalPages > 1)
-            {
-                <li class="page-item @(Model.PageIndex == Model.TotalPages ? "active" : "")">
-                    <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@Model.TotalPages">@Model.TotalPages</a>
-                </li>
-            }
-
-            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="/profile/@Model.Profile.UserName?Page=@(Model.PageIndex + 1)">Next</a>
-            </li>
-        </ul>
-    </nav>
+    @await Html.PartialAsync("Pagination", new PaginationModel
+    {
+        PageIndex = Model.PageIndex,
+        TotalPages = Model.TotalPages,
+        GenerateUrl = page => $"/profile/{Model.Profile.UserName}?Page={page}"
+    })
 </div>
 
 @section Scripts {

@@ -1,4 +1,4 @@
-﻿namespace UzlezzBlogs.Microservices.Shared.Configs;
+﻿namespace UzlezzBlogs.Core.Configs;
 
 public class JwtConfig
 {

@@ -14,7 +14,10 @@ namespace UzlezzBlogs.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var list = await postService.GetLatestPosts(PageIndex);
+            var result = await postService.GetLatestPosts(PageIndex);
+            if (!result.IsSuccessStatusCode) return StatusCode(StatusCodes.Status503ServiceUnavailable);
+
+            var list = result.Content!;
             if (PageIndex > list.TotalPages && list.TotalPages > 0)
                 return LocalRedirect($"/?Page={list.TotalPages}");
 

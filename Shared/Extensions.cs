@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using UzlezzBlogs.Microservices.Shared.Configs;
+using UzlezzBlogs.Core.Configs;
 
 namespace UzlezzBlogs.Microservices.Shared;
 

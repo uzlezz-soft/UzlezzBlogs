@@ -1,4 +1,5 @@
 ﻿@page "{post}"
+@using UzlezzBlogs.Middleware
 @model UzlezzBlogs.Pages.PostModel
 @{
     ViewData["Title"] = Model.Details.Title;
@@ -95,7 +96,7 @@
 
     <hr class="mt-5" />
 
-    @if (User.Identity!.IsAuthenticated)
+    @if (HttpContext.IsAuthorized())
     {
         <form id="commentForm" class="mt-4">
             @Html.AntiForgeryToken()
@@ -137,4 +138,12 @@
     </div>
 </div>
 
-
+@section Scripts {
+    @if (HttpContext.IsAuthorized())
+    {
+        <script>
+            const postId = "@Model.Details.Id";
+        </script>
+        <script src="~/js/details.js"></script>
+    }
+}

@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using UzlezzBlogs.Core.Dto;
-using UzlezzBlogs.Microservices.Shared.Configs;
+using UzlezzBlogs.Core.Configs;
 
 namespace Auth.Api.Services;
 
@@ -42,7 +42,7 @@ public class UserService : IUserService
         var result = await _userManager.ConfirmEmailAsync(user, token);
         if (!result.Succeeded) return false;
 
-        _logger.LogInformation("{UserName} confirmed email {Email}", user.UserName, user.Email);
+        _logger.LogInformation("{UserName} confirmed email", user.UserName);
         // TODO: send confirmation email
 
         return true;
@@ -74,7 +74,7 @@ public class UserService : IUserService
         var result = await _userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
-            _logger.LogInformation("User registered: {UserName} {Email}", user.UserName, user.Email);
+            _logger.LogInformation("User registered: {UserName}", user.UserName);
             // TODO: send confirmation email
 
             return null;

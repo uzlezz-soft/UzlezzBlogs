@@ -21,6 +21,7 @@ public static class Extensions
         })
             .AddEntityFrameworkStores<TEntityFrameworkStore>()
             .AddTokenProvider<DataProtectorTokenProvider<TUser>>(TokenOptions.DefaultProvider);
+
         return services;
     }
 }

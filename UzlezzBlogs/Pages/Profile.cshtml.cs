@@ -14,9 +14,16 @@ public class ProfileModel(IPostService postService, IAuthService authService) : 
 
     public async Task<IActionResult> OnGet(string userName)
     {
-        Profile = await authService.GetProfile(userName);
+        var profile = await authService.GetProfile(userName);
+        if (!profile.IsSuccessStatusCode)
+            return profile.StatusCode == HttpStatusCode.NotFound ? NotFound() : StatusCode(StatusCodes.Status503ServiceUnavailable);
 
-        var list = await postService.GetUserPosts(userName, PageIndex);
+        Profile = profile.Content!;
+
+        var result = await postService.GetUserPosts(userName, PageIndex);
+        if (!result.IsSuccessStatusCode) return StatusCode(StatusCodes.Status503ServiceUnavailable);
+        var list = result.Content!;
+
         if (PageIndex > list.TotalPages && list.TotalPages > 0)
             return LocalRedirect($"/profile/{userName}?page={list.TotalPages}");
 
