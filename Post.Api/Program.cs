@@ -23,6 +23,13 @@ builder.Services.AddTransient<IPostUrlGenerator, PostUrlGenerator>();
 builder.Services.AddTransient<IHtmlGenerator, MarkdigHtmlGenerator>();
 builder.Services.AddScoped<IPostService, PostService>();
 
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(b => b.Expire(TimeSpan.FromMinutes(1)));
+    options.AddPolicy("profile", b => b.Expire(TimeSpan.FromMinutes(5)));
+    options.AddPolicy("details", b => b.Expire(TimeSpan.FromSeconds(30)));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -31,18 +38,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseOutputCache();
+
 app.MapGet("/list/{page}", async (IPostService postService, [FromRoute] int page = 1) =>
 {
     var (posts, totalPages) = await postService.GetPagedPostsAsync(page);
     return Results.Ok(new PostPreviewList(posts, totalPages));
-});
+})
+    .CacheOutput();
 
 app.MapGet("/list/user/{userName}/{page}", async (IPostService postService,
     [FromRoute] string userName, [FromRoute] int page = 1) =>
 {
     var (posts, totalPages) = await postService.GetUserPostsAsync(userName, page);
     return Results.Ok(new PostPreviewList(posts, totalPages));
-});
+})
+    .CacheOutput("profile");
 
 app.MapGet("/list/rated/{page}", [Authorize] async (IPostService postService, HttpContext context, [FromRoute] int page = 1) =>
 {
@@ -58,7 +69,8 @@ app.MapGet("/details/{url}", async (IPostService postService, HttpContext contex
     var post = await postService.GetPostWithDetailsAsync(url, userId);
     if (post is null) return Results.NotFound();
     return Results.Ok(post);
-});
+})
+    .CacheOutput("details");
 
 app.MapGet("/details/{id}/comments", async (IPostService postService, [FromRoute] string id,
     [FromQuery] int skip = 0, [FromQuery] int take = 50) =>
