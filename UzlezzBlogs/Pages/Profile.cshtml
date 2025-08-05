@@ -39,12 +39,10 @@
         </div>
     }
 
-    @await Html.PartialAsync("Pagination", new PaginationModel
-    {
-        PageIndex = Model.PageIndex,
-        TotalPages = Model.TotalPages,
-        GenerateUrl = page => $"/profile/{Model.Profile.UserName}?Page={page}"
-    })
+    <pagination
+        page-index="@Model.PageIndex"
+        total-pages="@Model.TotalPages"
+        generate-url="@((page) => $"/profile/{Model.Profile.UserName}?Page={page}")" />
 </div>
 
 @section Scripts {

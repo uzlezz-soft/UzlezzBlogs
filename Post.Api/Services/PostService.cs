@@ -154,7 +154,6 @@ public class PostService : IPostService
     {
         var post = await _context.Posts
             .Include(p => p.Ratings)
-            .Include(p => p.Comments)
             .AsSplitQuery()
             .FirstOrDefaultAsync(p => p.Url == postUrl);
         if (post is null) return null;
@@ -163,7 +162,12 @@ public class PostService : IPostService
         _context.Update(post);
         await _context.SaveChangesAsync();
 
-        return post.ToPostDetails(requestingUserId);
+        var commentCount = await _context.Posts
+            .Include(x => x.Comments)
+            .Select(x => new { x.Id, x.Comments.Count })
+            .FirstAsync(x => x.Id == post.Id);
+
+        return post.ToPostDetails(commentCount.Count, requestingUserId);
     }
 
     public async Task<(PostPreview[] posts, int totalPages)> GetUserPostsAsync(string userName, int page)

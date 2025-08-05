@@ -12,7 +12,8 @@ public class PostModel(IPostService postService) : PageModel
 
     public async Task<IActionResult> OnGet(string post)
     {
-        var details = await postService.GetPostDetails(post);
+        var details = await postService.GetPostDetails(post,
+            HttpContext.IsAuthorized() ? HttpContext.GetAuthToken() : null);
         if (!details.IsSuccessStatusCode)
             return details.StatusCode == HttpStatusCode.NotFound
                 ? NotFound()

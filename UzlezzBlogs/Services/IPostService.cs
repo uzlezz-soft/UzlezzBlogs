@@ -12,7 +12,7 @@ public interface IPostService
     Task<IApiResponse<RatedPostPreviewList>> GetRatedPosts(int page, [Authorize] string token);
 
     [Get("/post/details/{url}")]
-    Task<IApiResponse<PostDetails>> GetPostDetails(string url);
+    Task<IApiResponse<PostDetails>> GetPostDetails(string url, [Authorize] string? token);
     [Get("/post/details/{id}/comments")]
     Task<IApiResponse<PostComment[]>> GetPostComments(string id, int skip, int take);
 

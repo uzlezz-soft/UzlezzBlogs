@@ -1,3 +1,4 @@
+using Hydro.Configuration;
 using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Configs;
 using UzlezzBlogs.Middleware;
@@ -7,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ApiConfig>(builder.Configuration.GetSection(ApiConfig.Api));
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Jwt));
+
+builder.Services.AddHydro();
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddRefitClient<IPostService>()
@@ -37,9 +41,8 @@ app.UseStaticFiles(new StaticFileOptions()
 app.UseRouting();
 app.UseTokenMiddleware();
 
-//app.UseAuthorization();
-
 app.MapRazorPages();
-app.MapControllers();
+
+app.UseHydro(builder.Environment);
 
 app.Run();
