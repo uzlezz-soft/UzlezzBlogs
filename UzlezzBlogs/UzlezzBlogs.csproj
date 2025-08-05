@@ -16,4 +16,9 @@
     <ProjectReference Include="..\UzlezzBlogs.Core\UzlezzBlogs.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\icons\" />
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
+
 </Project>
