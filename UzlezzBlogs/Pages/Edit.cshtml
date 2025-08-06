@@ -1,0 +1,87 @@
+﻿@page "{id}"
+@model UzlezzBlogs.Pages.EditModel
+@{
+    ViewData["Title"] = $"Edit post {Model.Title}";
+}
+
+<div class="container py-4">
+    <h2>Edit post</h2>
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input hidden asp-for="Id" value="@Model.Id" />
+        <input hidden asp-for="Url" value="@Model.Url" />
+
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Title</label>
+                <input class="form-control" disabled value="@Model.Title" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-12 mb-3">
+                <label asp-for="Description" class="form-label">Short Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row flex-column flex-md-row">
+            <div class="col-md-6 col-12 mb-3">
+                <label asp-for="Markdown" class="form-label">Markdown</label>
+                <textarea asp-for="Markdown" class="form-control" rows="15" id="markdown-input"></textarea>
+                <span asp-validation-for="Markdown" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 col-12 mb-3">
+                <label class="form-label">Preview</label>
+                <div id="markdown-preview" class="border p-3 bg-light rounded" style="min-height: 200px;">
+                    @Html.Raw(Model.ContentHtml)
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-success w-100">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let timer = null;
+        let lastRequestTime = 0;
+
+        const input = document.getElementById('markdown-input');
+        const preview = document.getElementById('markdown-preview');
+
+        input.addEventListener('input', () => {
+            if (timer) clearTimeout(timer);
+
+            timer = setTimeout(() => {
+                const now = Date.now();
+                const elapsed = now - lastRequestTime;
+
+                const fetchPreview = () => {
+                    lastRequestTime = Date.now();
+                    fetch(`/Preview?Markdown=${encodeURIComponent(input.value)}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            preview.innerHTML = JSON.parse(html);
+                        })
+                        .catch(err => {
+                            preview.innerHTML = "<span class='text-danger'>Error loading preview</span>";
+                        });
+                };
+
+                if (elapsed >= 5000) {
+                    fetchPreview();
+                } else {
+                    setTimeout(fetchPreview, 5000 - elapsed);
+                }
+            }, 1000);
+        });
+    </script>
+}

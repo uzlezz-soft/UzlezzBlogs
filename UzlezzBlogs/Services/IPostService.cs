@@ -29,5 +29,5 @@ public interface IPostService
     [Post("/post/create")]
     Task<IApiResponse<PostPreview>> CreatePost([Body] PostCreateRequest request, [Authorize] string token);
     [Post("/post/edit")]
-    Task<IApiResponse<bool>> EditPost([Body] PostEditRequest request, [Authorize] string token);
+    Task<IApiResponse> EditPost([Body] PostEditRequest request, [Authorize] string token);
 }

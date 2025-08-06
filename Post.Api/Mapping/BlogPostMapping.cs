@@ -13,7 +13,7 @@ public static class BlogPostMapping
             post.Ratings.FirstOrDefault(x => x.UserId == userId)!.IsUpvote, post.UserName);
 
     public static PostContent ToPostContent(this BlogPost post) =>
-        new PostContent(post.Title, post.Description, post.Content, post.HtmlContent, post.UserName);
+        new PostContent(post.Title, post.Description, post.Content, post.HtmlContent, post.Url);
 
     public static PostDetails ToPostDetails(this BlogPost post, int commentCount, string? requestingUserId) =>
         new PostDetails(post.Id, post.Title, post.Url, post.HtmlContent, post.CreatedDate, post.UserName, post.ViewCount,

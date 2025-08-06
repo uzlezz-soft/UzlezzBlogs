@@ -39,7 +39,6 @@ public class TokenMiddleware(ITokenValidatorService tokenValidator) : IMiddlewar
         }
         context.Items[Constants.AuthorizedUser] = user;
 
-
         await next(context);
     }
 }
