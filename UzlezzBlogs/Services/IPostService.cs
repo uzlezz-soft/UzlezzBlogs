@@ -25,4 +25,9 @@ public interface IPostService
     Task<IApiResponse<PostRatings>> RatePost(string postId, int rating, [Authorize] string token);
     [Post("/post/comment/{postId}")]
     Task<IApiResponse<PostComment>> Comment(string postId, string content, [Authorize] string token);
+
+    [Post("/post/create")]
+    Task<IApiResponse<PostPreview>> CreatePost([Body] PostCreateRequest request, [Authorize] string token);
+    [Post("/post/edit")]
+    Task<IApiResponse<bool>> EditPost([Body] PostEditRequest request, [Authorize] string token);
 }

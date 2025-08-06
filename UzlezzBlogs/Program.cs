@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<ApiConfig>(builder.Configuration.GetSection(ApiConfig.Api));
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Jwt));
 
+builder.Services.AddSingleton<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddTokenMiddleware();
 
 builder.Services.AddHydro();

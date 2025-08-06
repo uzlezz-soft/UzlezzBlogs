@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using UzlezzBlogs.Core.Configs;
+using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Middleware;
 
-public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
+public class TokenMiddleware(ITokenValidatorService tokenValidator) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -20,7 +15,7 @@ public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
         {
             if (attribute is not null)
             {
-                context.Response.StatusCode = 401;
+                context.Response.Redirect($"/login?returnUrl={context.Request.Path}");
                 return;
             }
             await next(context);
@@ -28,51 +23,22 @@ public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
         }
         context.Items[Constants.Token] = cookie;
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Value.Key));
-
-        var result = await new JwtSecurityTokenHandler().ValidateTokenAsync(cookie, new TokenValidationParameters()
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidIssuer = config.Value.Issuer,
-            ValidAudience = config.Value.Audience,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = key,
-            ClockSkew = TimeSpan.Zero
-        });
-        if (!result.IsValid)
+        var user = await tokenValidator.ValidateAsync(cookie);
+        if (user is null)
         {
             context.Items.Remove(Constants.Token);
             context.Response.Cookies.Delete(Constants.JwtCookieName);
 
             if (attribute is not null)
             {
-                context.Response.StatusCode = 401;
+                context.Response.Redirect($"/login?returnUrl={context.Request.Path}");
                 return;
             }
             await next(context);
             return;
         }
+        context.Items[Constants.AuthorizedUser] = user;
 
-        var id = result.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-        var name = result.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-        var email = result.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-
-        if (id is null || name is null || email is null)
-        {
-            context.Items.Remove(Constants.Token);
-            context.Response.Cookies.Delete(Constants.JwtCookieName);
-
-            if (attribute is not null)
-            {
-                context.Response.StatusCode = 401;
-                return;
-            }
-        }
-        else
-        {
-            context.Items[Constants.AuthorizedUser] = new AuthorizedUser(id!, name!, email!);
-        }
 
         await next(context);
     }
