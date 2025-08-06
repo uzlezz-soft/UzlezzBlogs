@@ -56,7 +56,7 @@
         </div>
 
         <div class="d-flex align-items-center">
-            @if (User.Identity!.IsAuthenticated && User.Identity.Name == Model.Details.User)
+            @if (HttpContext.IsAuthorized() && HttpContext.GetUser().Name == Model.Details.User)
             {
                 <a href="/edit/@Model.Details.Id"
                    class="btn btn-sm btn-outline-secondary me-2">

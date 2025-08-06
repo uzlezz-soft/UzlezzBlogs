@@ -4,4 +4,5 @@ public static class Constants
 {
     public static readonly string JwtCookieName = "jwt";
     public static readonly string Token = "auth_token";
+    public static readonly string AuthorizedUser = "auth_user";
 }

@@ -33,7 +33,7 @@ public class LoginModel(IAuthService authService) : PageModel
     {
         if (HttpContext.GetAuthToken() is not null)
         {
-            return LocalRedirect(returnUrl ?? "/");
+            return LocalRedirect(Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : "/");
         }
 
         ReturnUrl = returnUrl ?? string.Empty;
@@ -66,6 +66,6 @@ public class LoginModel(IAuthService authService) : PageModel
         };
 
         Response.Cookies.Append(Constants.JwtCookieName, result.Content!.Token, options);
-        return LocalRedirect("/");
+        return LocalRedirect(Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : "/");
     }
 }
