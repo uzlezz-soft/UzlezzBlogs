@@ -1,0 +1,33 @@
+﻿@page
+@using UzlezzBlogs.Middleware
+@model UzlezzBlogs.Pages.MeModel
+@{
+    var user = HttpContext.GetUser()!;
+    ViewData["Title"] = $"{user.Name} profile";
+}
+
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
+        <div class="card-body text-center">
+            <img src="/avatar/@user.Name"
+                 class="rounded-circle mb-3" alt="User Avatar"
+                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;" />
+            <h4 class="card-title">@user.Name</h4>
+        </div>
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+                <a asp-page="/Profile" asp-route-userName="@user.Name" class="btn btn-outline-primary w-100">My Profile</a>
+            </li>
+            <li class="list-group-item text-center">
+                <a asp-page="/MyRatings" class="btn btn-outline-primary w-100">My Ratings</a>
+            </li>
+            <li class="list-group-item text-center">
+                <a asp-page="/Settings" class="btn btn-outline-secondary w-100">Settings</a>
+            </li>
+            <li class="list-group-item text-center">
+                <a asp-page="/Logout" class="btn btn-outline-danger w-100">Logout</a>
+            </li>
+        </ul>
+    </div>
+</div>

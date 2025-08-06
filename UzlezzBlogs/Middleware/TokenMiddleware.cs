@@ -12,27 +12,13 @@ public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        /*var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
-        var attribute = endpoint?.Metadata.GetMetadata<RequestAuthAttribute>();
-        if (attribute is not null)
-        {
-            var cookie = context.Request.Cookies[Constants.JwtCookieName];
-
-            if (cookie is null && attribute.Required)
-            {
-                context.Response.StatusCode = 401;
-                return;
-            }
-
-            context.Items[Constants.Token] = cookie;
-        }*/
         var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
         var attribute = endpoint?.Metadata.GetMetadata<RequestAuthAttribute>();
 
         var cookie = context.Request.Cookies[Constants.JwtCookieName];
         if (cookie is null)
         {
-            if (attribute is not null && attribute.Required)
+            if (attribute is not null)
             {
                 context.Response.StatusCode = 401;
                 return;
@@ -59,7 +45,7 @@ public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
             context.Items.Remove(Constants.Token);
             context.Response.Cookies.Delete(Constants.JwtCookieName);
 
-            if (attribute is not null && attribute.Required)
+            if (attribute is not null)
             {
                 context.Response.StatusCode = 401;
                 return;
@@ -77,7 +63,7 @@ public class TokenMiddleware(IOptions<JwtConfig> config) : IMiddleware
             context.Items.Remove(Constants.Token);
             context.Response.Cookies.Delete(Constants.JwtCookieName);
 
-            if (attribute is not null && attribute.Required)
+            if (attribute is not null)
             {
                 context.Response.StatusCode = 401;
                 return;

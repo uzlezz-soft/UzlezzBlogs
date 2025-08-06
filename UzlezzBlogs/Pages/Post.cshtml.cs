@@ -4,7 +4,6 @@ using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 
-[RequestAuth(Required = false)]
 public class PostModel(IPostService postService) : PageModel
 {
     public PostDetails Details { get; set; }

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Middleware;
@@ -6,36 +5,38 @@ using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 
-public class LoginModel(IAuthService authService) : PageModel
+public class RegisterModel(IAuthService authService) : PageModel
 {
     [Required]
     [Display(Name = "Username")]
     [StringLength(30, MinimumLength = 3)]
     [BindProperty]
-    public string UserName { get; set; } = string.Empty;
+    public string UserName { get; set; } = "";
+
+    [Required]
+    [EmailAddress]
+    [BindProperty]
+    public string Email { get; set; } = "";
 
     [Required]
     [DataType(DataType.Password)]
     [StringLength(100, MinimumLength = 6)]
     [BindProperty]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } = "";
 
-    [Display(Name = "Remember me")]
+    [Required]
+    [DataType(DataType.Password)]
+    [Display(Name = "Confirm Password")]
+    [Compare("Password", ErrorMessage = "Passwords do not match.")]
     [BindProperty]
-    public bool RememberMe { get; set; }
+    public string ConfirmPassword { get; set; } = "";
 
-    [ValidateNever]
-    [BindProperty]
-    public string ReturnUrl { get; set; } = string.Empty;
-
-    public IActionResult OnGet([FromQuery(Name = "ReturnUrl")] string? returnUrl = null)
+    public IActionResult OnGet()
     {
-        if (HttpContext.GetAuthToken() is not null)
+        if (HttpContext.IsAuthorized())
         {
-            return LocalRedirect(Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : "/");
+            return LocalRedirect("/Me");
         }
-
-        ReturnUrl = returnUrl ?? string.Empty;
         return Page();
     }
 
@@ -44,12 +45,12 @@ public class LoginModel(IAuthService authService) : PageModel
         if (!ModelState.IsValid)
             return Page();
 
-        var result = await authService.Login(new LoginRequest(UserName, Password));
+        var result = await authService.Register(new RegisterRequest(UserName, Email, Password));
         if (!result.IsSuccessStatusCode)
         {
-            if (result.StatusCode == HttpStatusCode.BadRequest)
+            if (result.StatusCode == HttpStatusCode.Conflict)
             {
-                ModelState.AddModelError(nameof(UserName), "Username or password is invalid");
+                ModelState.AddModelError(nameof(UserName), "User with this name or email is already registered");
                 return Page();
             }
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
@@ -65,6 +66,6 @@ public class LoginModel(IAuthService authService) : PageModel
         };
 
         Response.Cookies.Append(Constants.JwtCookieName, result.Content!.Token, options);
-        return LocalRedirect(Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : "/");
+        return LocalRedirect("/Me");
     }
 }
