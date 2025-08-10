@@ -1,11 +1,13 @@
+using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Middleware;
 using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 
-public class RegisterModel(IAuthService authService) : PageModel
+public class RegisterModel(IAuthService authService, IOptions<AuthConfig> authConfig) : PageModel
 {
     [Required]
     [Display(Name = "Username")]
@@ -58,7 +60,7 @@ public class RegisterModel(IAuthService authService) : PageModel
 
         var options = new CookieOptions
         {
-            Secure = true,
+            Secure = authConfig.Value.CookieHttpsOnly,
             HttpOnly = true,
             SameSite = SameSiteMode.Lax,
             Expires = DateTimeOffset.UtcNow + TimeSpan.FromDays(7),

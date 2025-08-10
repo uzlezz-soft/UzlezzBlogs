@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureMessageBroker(builder.Configuration);
 
 builder.Services.ConfigureDatabaseContext<PostDbContext>(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddJwtAuth(builder.Configuration);
@@ -19,8 +20,8 @@ builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.Configure<MainPageConfig>(builder.Configuration.GetSection(MainPageConfig.MainPage));
 builder.Services.Configure<PostUrlConfig>(builder.Configuration.GetSection(PostUrlConfig.PostUrl));
 
-builder.Services.AddTransient<IPostUrlGenerator, PostUrlGenerator>();
-builder.Services.AddTransient<IHtmlGenerator, MarkdigHtmlGenerator>();
+builder.Services.AddSingleton<IPostUrlGenerator, PostUrlGenerator>();
+builder.Services.AddSingleton<IHtmlGenerator, MarkdigHtmlGenerator>();
 builder.Services.AddScoped<IPostService, PostService>();
 
 builder.Services.AddOutputCache(options =>

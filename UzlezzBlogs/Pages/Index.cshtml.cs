@@ -5,7 +5,7 @@ namespace UzlezzBlogs.Pages
 {
     public class IndexModel(IPostService postService) : PageModel
     {
-        public PostPreview[] Posts { get; set; }
+        public required PostPreview[] Posts { get; set; }
 
         [BindProperty(SupportsGet = true, Name = "Page")]
         public int PageIndex { get; set; } = 1;

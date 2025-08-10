@@ -8,7 +8,7 @@
     <h2>Edit post</h2>
     <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
         <input hidden asp-for="Id" value="@Model.Id" />
-        <input hidden asp-for="Url" value="@Model.Url" />
+        <input hidden asp-for="PostUrl" value="@Model.PostUrl" />
 
         <div class="row">
             <div class="col-md-6 col-12 mb-3">

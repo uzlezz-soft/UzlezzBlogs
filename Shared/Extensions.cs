@@ -6,15 +6,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UzlezzBlogs.Core.Configs;
+using UzlezzBlogs.Microservices.Shared.Configs;
 
 namespace UzlezzBlogs.Microservices.Shared;
 
 public static class Extensions
 {
+    public static IServiceCollection ConfigureMessageBroker(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<RabbitMqConfig>(configuration.GetSection(RabbitMqConfig.RabbitMq));
+        services.AddSingleton<IMessageBroker, RabbitMqService>();
+        return services;
+    }
+
     public static IServiceCollection ConfigureDatabaseContext<T>(this IServiceCollection services, string connectionString)
         where T : DbContext
     {
-        services.AddDbContext<T>(options =>
+        services.AddDbContextPool<T>(options =>
         {
             options.UseNpgsql(connectionString);
             options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));

@@ -8,8 +8,8 @@ public class ProfileModel(IPostService postService, IAuthService authService) : 
     [BindProperty(SupportsGet = true, Name = "Page")]
     public int PageIndex { get; set; } = 1;
 
-    public UserProfile Profile { get; set; }
-    public PostPreview[] Posts { get; set; }
+    public required UserProfile Profile { get; set; }
+    public required PostPreview[] Posts { get; set; }
     public int TotalPages { get; set; } = 1;
 
     public async Task<IActionResult> OnGet(string userName)

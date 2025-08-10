@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Middleware;
 using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 
-public class LoginModel(IAuthService authService) : PageModel
+public class LoginModel(IAuthService authService, IOptions<AuthConfig> authConfig) : PageModel
 {
     [Required]
     [Display(Name = "Username")]
@@ -57,7 +59,7 @@ public class LoginModel(IAuthService authService) : PageModel
 
         var options = new CookieOptions
         {
-            Secure = true,
+            Secure = authConfig.Value.CookieHttpsOnly,
             HttpOnly = true,
             SameSite = SameSiteMode.Lax,
             Expires = DateTimeOffset.UtcNow + TimeSpan.FromDays(7),

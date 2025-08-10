@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureMessageBroker(builder.Configuration);
 
 builder.Services.ConfigureDatabaseContext<AuthDbContext>(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.ConfigureIdentity<User, AuthDbContext>();

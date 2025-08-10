@@ -7,7 +7,14 @@ using UzlezzBlogs.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ApiConfig>(builder.Configuration.GetSection(ApiConfig.Api));
+builder.Services.Configure<AuthConfig>(builder.Configuration.GetSection(AuthConfig.Auth));
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Jwt));
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
 
 builder.Services.AddSingleton<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddTokenMiddleware();

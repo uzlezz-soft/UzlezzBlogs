@@ -6,8 +6,8 @@ namespace UzlezzBlogs.Pages;
 
 public class PostModel(IPostService postService) : PageModel
 {
-    public PostDetails Details { get; set; }
-    public PostComment[] Comments { get; set; }
+    public required PostDetails Details { get; set; }
+    public required PostComment[] Comments { get; set; }
 
     public async Task<IActionResult> OnGet(string post)
     {

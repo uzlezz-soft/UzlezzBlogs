@@ -24,10 +24,10 @@ public class EditModel(IPostService postService) : PageModel
     [BindProperty]
     public string Markdown { get; set; } = string.Empty;
 
-    public string ContentHtml { get; set; }
+    public required string ContentHtml { get; set; }
 
-    [BindProperty]
-    public required string Url { get; set; }
+    [BindProperty(Name = "Url")]
+    public required string PostUrl { get; set; }
 
     public async Task<IActionResult> OnGet(string id)
     {
@@ -44,7 +44,7 @@ public class EditModel(IPostService postService) : PageModel
         Description = result.Content!.Description;
         Markdown = result.Content!.Content;
         ContentHtml = result.Content!.HtmlContent;
-        Url = result.Content!.Url;
+        PostUrl = result.Content!.Url;
         return Page();
     }
 
