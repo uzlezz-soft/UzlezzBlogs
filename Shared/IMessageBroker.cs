@@ -5,5 +5,5 @@ namespace UzlezzBlogs.Microservices.Shared;
 public interface IMessageBroker
 {
     public Task Publish<TMessage>(TMessage message) where TMessage : IMessage;
-    public Task Consume<TMessage>(Func<TMessage, Task> consumer) where TMessage : IMessage;
+    public Task Consume<TMessage>(Func<TMessage, Task> consumer, CancellationToken cancellationToken = default) where TMessage : IMessage;
 }

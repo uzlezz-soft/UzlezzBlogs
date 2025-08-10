@@ -35,7 +35,7 @@ public class RabbitMqService : IMessageBroker, IAsyncDisposable
         await _channel.BasicPublishAsync("", TMessage.Queue, body);
     }
 
-    public async Task Consume<TMessage>(Func<TMessage, Task> consumer) where TMessage : IMessage
+    public async Task Consume<TMessage>(Func<TMessage, Task> consumer, CancellationToken cancellationToken = default) where TMessage : IMessage
     {
         var c = new AsyncEventingBasicConsumer(_channel);
         c.ReceivedAsync += async (channel, args) =>
@@ -54,7 +54,7 @@ public class RabbitMqService : IMessageBroker, IAsyncDisposable
             }
         };
 
-        await _channel.BasicConsumeAsync(TMessage.Queue, false, c);
+        await _channel.BasicConsumeAsync(TMessage.Queue, false, c, cancellationToken);
     }
 
     public async ValueTask DisposeAsync()

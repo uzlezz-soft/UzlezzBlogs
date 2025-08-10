@@ -39,17 +39,21 @@ public class PostService(
 
         logger.LogInformation("User {UserName} commented on post {PostId}: {PostTitle}",
             userName, post.Id, post.Title);
-        await messageBroker.Publish<Notification>(new Notification
+        if (post.UserName != comment.UserName)
         {
-            UserName = post.UserName,
-            Parameters = new()
+            await messageBroker.Publish(new Notification
             {
-                ["type"] = "comment",
-                ["postTitle"] = post.Title,
-                ["author"] = userName,
-                ["content"] = comment.Content
-            }
-        });
+                TargetUserName = post.UserName,
+                Type = "comment",
+                Parameters = new()
+                {
+                    ["postTitle"] = post.Title,
+                    ["postUrl"] = post.Url,
+                    ["author"] = userName,
+                    ["content"] = comment.Content
+                }
+            });
+        }
 
         return comment.ToPostComment();
     }
@@ -77,7 +81,17 @@ public class PostService(
         await context.SaveChangesAsync();
 
         logger.LogInformation("User {UserName} created post {PostId}: {PostTitle}", userId, post.Id, post.Title);
-        // TODO: send notification
+        await messageBroker.Publish(new Notification
+        {
+            Type = "post",
+            Parameters = new()
+            {
+                ["title"] = post.Title,
+                ["description"] = post.Description,
+                ["author"] = post.UserName,
+                ["url"] = post.Url
+            }
+        });
 
         return post.ToPostPreview();
     }

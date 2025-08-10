@@ -1,15 +1,20 @@
-using NotificationService.Services;
 using Microsoft.AspNetCore.Mvc.Razor;
+using NotificationService;
+using NotificationService.Configs;
+using NotificationService.Services;
 using UzlezzBlogs.Microservices.Shared;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((ctx, services) =>
     {
-        services.AddRazorPages();
-        services.Configure<RazorViewEngineOptions>(_ => {});
+        services.ConfigureDatabaseContext<NotificationDbContext>(ctx.Configuration.GetConnectionString("DefaultConnection")!);
+
+        services.Configure<MailConfig>(ctx.Configuration.GetSection(MailConfig.Mail));
+        services.AddScoped<IMailService, MailService>();
+
         services.ConfigureMessageBroker(ctx.Configuration);
 
-        services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+        services.AddSingleton<INotificationEmailFactory, NotificationEmailFactory>();
         services.AddHostedService<NotificationBackgroundService>();
     });
 
