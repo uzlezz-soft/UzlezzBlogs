@@ -11,4 +11,6 @@ public class MailConfig
     public required string SmtpPassword { get; set; }
 
     public required string WebsiteUrl { get; set; }
+
+    public string Link(string link) => $"{WebsiteUrl}/{link}";
 }

@@ -14,4 +14,7 @@ public interface IAuthService
 
     [Get("/auth/profile/{userName}")]
     Task<IApiResponse<UserProfile>> GetProfile(string userName);
+
+    [Get("/auth/confirmEmail")]
+    Task<IApiResponse> ConfirmEmail([Query] string token, [Authorize] string authToken);
 }

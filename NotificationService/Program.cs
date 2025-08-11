@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Razor;
 using NotificationService;
 using NotificationService.Configs;
 using NotificationService.Services;
@@ -14,8 +13,9 @@ var builder = Host.CreateDefaultBuilder(args)
 
         services.ConfigureMessageBroker(ctx.Configuration);
 
-        services.AddSingleton<INotificationEmailFactory, NotificationEmailFactory>();
+        services.AddSingleton<IMailMessageFactory, MailMessageFactory>();
         services.AddHostedService<NotificationBackgroundService>();
+        services.AddHostedService<MailConfirmationBackgroundService>();
     });
 
 var app = builder.Build();

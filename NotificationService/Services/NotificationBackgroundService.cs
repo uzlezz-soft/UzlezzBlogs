@@ -9,13 +9,12 @@ namespace NotificationService.Services;
 public class NotificationBackgroundService(IMessageBroker messageBroker,
     IServiceScopeFactory serviceScopeFactory,
     IMailService mailService,
-    INotificationEmailFactory emailFactory,
+    IMailMessageFactory messageFactory,
     ILogger<NotificationBackgroundService> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await messageBroker.Consume<Notification>(SendNotification, stoppingToken);
-        await messageBroker.Consume<UserEmailConfirmed>(OnEmailConfirmed, stoppingToken);
     }
 
     private async Task SendNotification(Notification notification)
@@ -44,7 +43,7 @@ public class NotificationBackgroundService(IMessageBroker messageBroker,
 
         try
         {
-            var (subject, body) = await emailFactory.FormEmail(notification);
+            var (subject, body) = await messageFactory.FormMessage(notification);
             if (subject is null || body is null)
             {
                 logger.LogError("Unable to send notification to {UserName}: unknown notification type {NotificationType}",
@@ -64,20 +63,5 @@ public class NotificationBackgroundService(IMessageBroker messageBroker,
             logger.LogError("Bad notification type: {NotificationType}, caused exception: {Exception}",
                 notification.Type, e.Message);
         }
-    }
-
-    private async Task OnEmailConfirmed(UserEmailConfirmed message)
-    {
-        using var scope = serviceScopeFactory.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-
-        var user = new ConfirmedUser
-        {
-            UserName = message.UserName,
-            Email = message.Email
-        };
-        await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
-        logger.LogInformation("User {UserName} confirmed email", user.UserName);
     }
 }

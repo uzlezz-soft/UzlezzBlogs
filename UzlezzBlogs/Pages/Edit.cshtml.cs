@@ -10,8 +10,10 @@ namespace UzlezzBlogs.Pages;
 public class EditModel(IPostService postService) : PageModel
 {
     [BindProperty]
+    [ValidateNever]
     public required string Id { get; set; }
 
+    [ValidateNever]
     public string Title { get; set; } = string.Empty;
 
     [Required]
@@ -27,6 +29,7 @@ public class EditModel(IPostService postService) : PageModel
     public required string ContentHtml { get; set; }
 
     [BindProperty(Name = "Url")]
+    [ValidateNever]
     public required string PostUrl { get; set; }
 
     public async Task<IActionResult> OnGet(string id)
@@ -62,6 +65,6 @@ public class EditModel(IPostService postService) : PageModel
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
 
-        return LocalRedirect($"/post/{Url}");
+        return LocalRedirect($"/post/{PostUrl}");
     }
 }

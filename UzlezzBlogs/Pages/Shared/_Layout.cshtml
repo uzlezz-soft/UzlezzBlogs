@@ -7,12 +7,15 @@
     <title>@ViewData["Title"] - UzlezzBlogs</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/github-markdown-css/dist/css/github-markdown.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UzlezzBlogs.styles.css" asp-append-version="true" />
 
     <meta name="hydro-config" />
     <script defer src="~/hydro/hydro.js" asp-append-version="true"></script>
     <script defer src="~/hydro/alpine.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("AdditionalMeta", required: false)
 </head>
 <body>
     <header>

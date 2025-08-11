@@ -9,6 +9,11 @@
     bool downvoted = Model.Details.Rating == false;
 }
 
+@section AdditionalMeta {
+    <meta name="description" content="@Model.Details.Description">
+    <meta name="author" content="@Model.Details.User">
+}
+
 <div class="container py-5" style="max-width: 800px;">
     <h1 class="mb-3" style="color: #343a40;">@Model.Details.Title</h1>
 
@@ -69,7 +74,7 @@
         </div>
     </div>
 
-    <div class="mt-4 justified-content" style="color: #444; font-size: 1.05rem; line-height: 1.7;">
+    <div class="mt-4 justified-content markdown-body">
         @Html.Raw(Model.Details.HtmlContent)
     </div>
 
@@ -110,7 +115,7 @@
                         <strong>@comment.User</strong>
                         <small class="text-muted"><span class="utc-date" data-utc="@comment.CreatedDate.ToString("o")"></span></small>
                     </div>
-                    <div class="mt-1 mb-0 justified-content" style="white-space: pre-wrap;">@Html.Raw(comment.Text)</div>
+                    <div class="mt-1 mb-0 justified-content markdown-body" style="white-space: pre-wrap;">@Html.Raw(comment.Text)</div>
                 </div>
             </div>
         }
