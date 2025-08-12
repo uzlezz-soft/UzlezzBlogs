@@ -1,11 +1,16 @@
 ﻿@page "{userName}"
 @using UzlezzBlogs.Pages.Shared
+@inject IMetaDescriptionBuilder DescriptionBuilder
 @model UzlezzBlogs.Pages.ProfileModel
 @{
     ViewData["Title"] = $"{Model.Profile.UserName} posts | page {Model.PageIndex}";
 
     var user = HttpContext.GetUser();
     bool isCurrentUser = user is not null && user.Name == @Model.Profile.UserName;
+}
+
+@section AdditionalMeta {
+    <meta name="description" content="@ViewData["title"]@DescriptionBuilder.BuildFromPostPreview(Model.Posts, false)" />
 }
 
 <div class="container py-5" style="max-width: 800px;">

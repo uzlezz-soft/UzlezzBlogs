@@ -1,6 +1,4 @@
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 

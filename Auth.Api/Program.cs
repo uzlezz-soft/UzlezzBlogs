@@ -3,7 +3,6 @@ using Auth.Api.Entities;
 using Auth.Api.Interfaces;
 using Auth.Api.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -93,7 +92,7 @@ app.MapPost("/editProfile", [Authorize] async (IUserService userService, HttpCon
 app.MapPost("/uploadAvatar", [Authorize] async (IUserService userService, HttpContext context, IFormFile file) =>
 {
     var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    
+
     await userService.UploadAvatar(userId!, file.OpenReadStream(), file.ContentType);
     return Results.Ok();
 })

@@ -1,7 +1,6 @@
 using Hydro.Configuration;
 using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Configs;
-using UzlezzBlogs.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 builder.Services.AddSingleton<ITokenValidatorService, TokenValidatorService>();
 builder.Services.AddTokenMiddleware();
+
+builder.Services.AddSingleton<IMetaDescriptionBuilder, MetaDescriptionBuilder>();
 
 builder.Services.AddHydro();
 

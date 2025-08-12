@@ -1,5 +1,3 @@
-using UzlezzBlogs.Services;
-
 namespace UzlezzBlogs.Pages;
 
 [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]

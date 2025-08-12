@@ -265,7 +265,7 @@ public class PostService(
         });
 
     private static readonly int MaxSearchKeywords = 16;
-    public async Task<(PostPreview[] posts, int totalPages)> SearchPostsAsync(string query,int page)
+    public async Task<(PostPreview[] posts, int totalPages)> SearchPostsAsync(string query, int page)
     {
         HashSet<PostPreview> allPosts = new();
 

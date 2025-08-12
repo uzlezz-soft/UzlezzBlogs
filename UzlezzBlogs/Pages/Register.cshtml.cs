@@ -2,7 +2,6 @@ using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Dto;
-using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 

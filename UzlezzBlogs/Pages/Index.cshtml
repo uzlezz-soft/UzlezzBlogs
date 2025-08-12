@@ -1,25 +1,14 @@
 ﻿@page
-@using System.Text
 @using UzlezzBlogs.Pages.Shared
 @using Hydro
 @model IndexModel
+@inject IMetaDescriptionBuilder DescriptionBuilder
 @{
     ViewData["Title"] = $"Latest Posts | Page {Model.PageIndex}";
-
-    var description = new StringBuilder();
-    foreach (var post in Model.Posts)
-    {
-        description.Append(" | \"");
-        if (post.Title.Length > 25)
-            description.Append(post.Title.AsSpan().Slice(0, 25)).Append("...");
-        else
-            description.Append(post.Title);
-        description.Append("\" by ").Append(post.User);
-    }
 }
 
 @section AdditionalMeta {
-    <meta name="description" content="@ViewData["Title"]@description" />
+    <meta name="description" content="@ViewData["Title"]@DescriptionBuilder.BuildFromPostPreview(Model.Posts)" />
 }
 
 <div class="container py-5" style="max-width: 800px;">
