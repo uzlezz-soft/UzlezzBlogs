@@ -8,3 +8,4 @@ public record LoginResponse(string Token);
 public record Avatar(string AvatarData, string AvatarMimeType);
 
 public record UserProfile(string UserName, string DescriptionHtml);
+public record UserProfileDetails(string UserName, string Description, string DescriptionHtml);

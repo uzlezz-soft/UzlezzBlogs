@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace UzlezzBlogs.Pages
+﻿namespace UzlezzBlogs.Pages
 {
     public class PrivacyModel : PageModel
     {

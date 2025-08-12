@@ -41,8 +41,9 @@ commentForm.addEventListener("submit", async (e) => {
         <div class="d-flex mb-4">
                 <img src="/avatar/${commentData.user}"
                     alt="avatar"
-                    class="rounded-circle me-3"
-                    style="width: 48px; height: 48px; object-fit: cover;" />
+                    class="rounded-circle me-3 comment-avatar"
+                    style="width: 48px; height: 48px; object-fit: cover;"
+                    profile="/profile/${commentData.user}" />
 
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-center">
@@ -55,6 +56,11 @@ commentForm.addEventListener("submit", async (e) => {
         `;
 
         commentList.insertAdjacentHTML("afterbegin", commentHtml);
+        const el = commentList.querySelector(".comment-avatar")
+        el.addEventListener("click", () => {
+            const profile = el.getAttribute("profile");
+            if (profile) window.location.href = profile;
+        })
     } else {
         commentTextarea.value = originalContent;
         alert("Failed to post comment.");

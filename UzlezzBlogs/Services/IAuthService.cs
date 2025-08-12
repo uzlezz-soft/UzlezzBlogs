@@ -17,4 +17,12 @@ public interface IAuthService
 
     [Get("/auth/confirmEmail")]
     Task<IApiResponse> ConfirmEmail([Query] string token, [Authorize] string authToken);
+
+    [Get("/auth/profile")]
+    Task<IApiResponse<UserProfileDetails>> GetProfileDetails([Authorize] string token);
+    [Post("/auth/editProfile")]
+    Task<IApiResponse> EditProfile([Query] string description, [Authorize] string token);
+    [Multipart]
+    [Post("/auth/uploadAvatar")]
+    Task<IApiResponse> UploadAvatar([AliasAs("file")] StreamPart stream, [Authorize] string token);
 }

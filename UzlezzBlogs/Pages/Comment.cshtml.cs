@@ -1,4 +1,3 @@
-using UzlezzBlogs.Middleware;
 using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;

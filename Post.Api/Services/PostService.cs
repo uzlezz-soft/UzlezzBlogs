@@ -70,7 +70,7 @@ public class PostService(
             Title = title,
             Description = description.Trim(),
             Content = content,
-            HtmlContent = htmlGenerator.GenerateHtml(content), 
+            HtmlContent = htmlGenerator.GenerateHtml(content),
             Url = url,
             ViewCount = 0,
             UserId = userId,

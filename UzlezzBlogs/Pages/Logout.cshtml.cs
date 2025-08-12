@@ -1,5 +1,3 @@
-using UzlezzBlogs.Middleware;
-
 namespace UzlezzBlogs.Pages;
 
 [RequestAuth]

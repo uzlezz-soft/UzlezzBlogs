@@ -1,7 +1,6 @@
 using Hydro.Configuration;
 using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Configs;
-using UzlezzBlogs.Middleware;
 using UzlezzBlogs.Services;
 
 var builder = WebApplication.CreateBuilder(args);

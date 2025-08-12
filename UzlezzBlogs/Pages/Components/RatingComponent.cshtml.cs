@@ -1,6 +1,5 @@
 using Hydro;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using UzlezzBlogs.Middleware;
 using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages.Components;
@@ -10,7 +9,7 @@ public class RatingComponent(IPostService postService, ILogger<RatingComponent> 
 {
     [HtmlAttributeNotBound]
     public string? Token { get; set; }
-    
+
     public string PostId { get; set; } = default!;
 
     public bool? Rating { get; set; }

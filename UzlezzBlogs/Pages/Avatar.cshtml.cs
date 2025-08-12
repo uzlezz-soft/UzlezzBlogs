@@ -2,7 +2,7 @@ using UzlezzBlogs.Services;
 
 namespace UzlezzBlogs.Pages;
 
-[ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Client)]
+[ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
 public class AvatarModel(IAuthService authService) : PageModel
 {
     public async Task<IActionResult> OnGet(string userName)

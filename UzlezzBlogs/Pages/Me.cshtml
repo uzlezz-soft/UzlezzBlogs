@@ -9,7 +9,7 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
         <div class="card-body text-center">
-            <img src="/avatar/@user.Name"
+            <img src="/avatar/@user.Name" id="avatar"
                  class="rounded-circle mb-3" alt="User Avatar"
                  style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;" />
             <h4 class="card-title">@user.Name</h4>
@@ -31,3 +31,23 @@
         </ul>
     </div>
 </div>
+
+@section Scripts {
+    @if (Model.ReCacheAvatar is not null && Model.ReCacheAvatar == true)
+    {
+        <script>
+            fetch('/avatar/@user.Name', {
+                headers: {
+                    'Cache-Control': 'reload'
+                }
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const objectUrl = URL.createObjectURL(blob)
+                document.querySelector("#avatar").src = objectUrl
+            })
+
+            alert('Avatar update can take up to 1 hour')
+        </script>
+    }
+}

@@ -8,8 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Core.Configs;
+using UzlezzBlogs.Core.Dto;
 using UzlezzBlogs.Microservices.Shared;
 using UzlezzBlogs.Microservices.Shared.Messages;
 
@@ -21,6 +21,7 @@ public class UserService(
     IOptions<JwtConfig> config,
     AuthDbContext context,
     IMessageBroker messageBroker,
+    IDescriptionHtmlGenerator descriptionHtmlGenerator,
     ILogger<UserService> logger) : IUserService
 {
     private readonly JwtConfig _config = config.Value;
@@ -42,6 +43,21 @@ public class UserService(
         return true;
     }
 
+    public async Task<bool> EditProfile(string userId, string description)
+    {
+        var profile = await context.Users
+            .Where(u => u.Id == userId)
+            .FirstOrDefaultAsync();
+        if (profile is null) return false;
+
+        if (string.IsNullOrWhiteSpace(description)) description = "No description";
+        profile.DescriptionMarkdown = description;
+        profile.Description = descriptionHtmlGenerator.GenerateHtml(description);
+        context.Update(profile);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<Avatar?> GetAvatarAsync(string userName)
     {
         userName = userManager.NormalizeName(userName);
@@ -59,6 +75,14 @@ public class UserService(
         return await context.Users
             .Where(u => u.NormalizedUserName == userName)
             .Select(u => u.ToProfile())
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<UserProfileDetails?> GetProfileDetailsAsync(string userId)
+    {
+        return await context.Users
+            .Where(u => u.Id == userId)
+            .Select(u => u.ToProfileDetails())
             .FirstOrDefaultAsync();
     }
 
@@ -115,5 +139,22 @@ public class UserService(
         // But how would other microservices check it?
         // Message broker notification?
         await signInManager.SignOutAsync();
+    }
+
+    public async Task UploadAvatar(string userId, Stream stream, string contentType)
+    {
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+
+        var avatar = Convert.ToBase64String(memoryStream.ToArray());
+
+        var user = await context.Users
+            .FirstOrDefaultAsync(x => x.Id == userId);
+        if (user is null) return;
+
+        user.Avatar = avatar;
+        user.AvatarMimeType = contentType;
+        context.Update(user);
+        await context.SaveChangesAsync();
     }
 }

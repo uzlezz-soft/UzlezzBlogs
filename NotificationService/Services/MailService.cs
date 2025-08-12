@@ -13,7 +13,7 @@ public class MailService(IOptions<MailConfig> config, ILogger<MailService> logge
     private async Task ReconnectIfNecessary()
     {
         if (_client is not null && _client.IsConnected) return;
-        
+
         _client = new SmtpClient();
         await _client.ConnectAsync(_config.SmtpHost, _config.SmtpPort, _config.SmtpUseSsl);
         await _client.AuthenticateAsync(_config.SmtpLogin, _config.SmtpPassword);

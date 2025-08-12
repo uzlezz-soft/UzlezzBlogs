@@ -1,6 +1,4 @@
-﻿using Auth.Api.Entities;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Identity;
 using UzlezzBlogs.Core.Dto;
 
 namespace Auth.Api.Interfaces;
@@ -13,4 +11,7 @@ public interface IUserService
     Task<bool> ConfirmEmailAsync(string userId, string token);
     Task<Avatar?> GetAvatarAsync(string userName);
     Task<UserProfile?> GetProfileAsync(string userName);
+    Task<UserProfileDetails?> GetProfileDetailsAsync(string userId);
+    Task<bool> EditProfile(string userId, string description);
+    Task UploadAvatar(string userId, Stream stream, string contentType);
 }
