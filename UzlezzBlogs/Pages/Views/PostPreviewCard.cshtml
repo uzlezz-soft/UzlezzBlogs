@@ -1,0 +1,21 @@
+﻿@model UzlezzBlogs.Pages.Views.PostPreviewCard
+
+<div class="card mb-4 border-bottom shadow-sm rounded post-clickable"
+     data-url="/post/@Model.Post.Url">
+
+    <div class="card-body">
+        <h2 class="card-title h4">@Model.Post.Title</h2>
+
+        <p class="card-text mt-3 text-secondary">
+            @Model.Post.Description
+        </p>
+
+        <div class="d-flex justify-content-between text-muted small mt-4">
+            <div class="d-flex align-items-center">
+                <avatar user-name="@Model.Post.User" width="32" height="32" add-classes="me-2" />
+                <span>@(Model.Post.User ?? "[deleted]")</span>
+            </div>
+            <span class="utc-date-only" data-utc="@Model.Post.CreatedDate.ToString("o")"></span>
+        </div>
+    </div>
+</div>

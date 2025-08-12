@@ -40,3 +40,12 @@ function searchPosts(e, form) {
     const query = form.querySelector(".search-posts")
     if (query == null || query.value.trim() == '') e.preventDefault()
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".post-clickable").forEach((el) => {
+        el.addEventListener("click", () => {
+            const url = el.getAttribute("data-url")
+            if (url) window.location.href = url
+        });
+    });
+});
