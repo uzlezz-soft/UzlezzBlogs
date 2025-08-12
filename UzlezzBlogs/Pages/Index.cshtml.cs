@@ -6,7 +6,7 @@ namespace UzlezzBlogs.Pages
     {
         public required PostPreview[] Posts { get; set; }
 
-        [BindProperty(SupportsGet = true, Name = "Page")]
+        [BindProperty(SupportsGet = true, Name = "p")]
         public int PageIndex { get; set; } = 1;
 
         public int TotalPages { get; set; } = 1;
@@ -18,8 +18,8 @@ namespace UzlezzBlogs.Pages
 
             var list = result.Content!;
             if (PageIndex > list.TotalPages && list.TotalPages > 0)
-                return LocalRedirect($"/?page={list.TotalPages}");
-
+                return LocalRedirect($"/?p={list.TotalPages}");
+            
             Posts = list.Posts;
             TotalPages = list.TotalPages;
 

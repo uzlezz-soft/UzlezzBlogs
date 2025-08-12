@@ -4,7 +4,7 @@ namespace UzlezzBlogs.Pages;
 
 public class ProfileModel(IPostService postService, IAuthService authService) : PageModel
 {
-    [BindProperty(SupportsGet = true, Name = "Page")]
+    [BindProperty(SupportsGet = true, Name = "p")]
     public int PageIndex { get; set; } = 1;
 
     public required UserProfile Profile { get; set; }
@@ -24,7 +24,7 @@ public class ProfileModel(IPostService postService, IAuthService authService) : 
         var list = result.Content!;
 
         if (PageIndex > list.TotalPages && list.TotalPages > 0)
-            return LocalRedirect($"/profile/{userName}?page={list.TotalPages}");
+            return LocalRedirect($"/profile/{userName}?p={list.TotalPages}");
 
         Posts = list.Posts;
         TotalPages = list.TotalPages;

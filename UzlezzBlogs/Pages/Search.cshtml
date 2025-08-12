@@ -19,5 +19,5 @@
 
     <pagination page-index="@Model.PageIndex"
                 total-pages="@Model.TotalPages"
-                generate-url="@((page) => $"/?query={Model.Query}&page={page}")" />
+                generate-url="@((page) => $"/Search?query={Model.Query}&p={page}")" />
 </div>

@@ -40,7 +40,7 @@
     <pagination
         page-index="@Model.PageIndex"
         total-pages="@Model.TotalPages"
-        generate-url="@((page) => $"/profile/{Model.Profile.UserName}?Page={page}")" />
+        generate-url="@((page) => $"/profile/{Model.Profile.UserName}?p={page}")" />
 </div>
 
 @section Scripts {

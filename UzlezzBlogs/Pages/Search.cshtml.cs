@@ -6,7 +6,7 @@ public class SearchModel(IPostService postService) : PageModel
 {
     public required PostPreview[] Posts { get; set; }
 
-    [BindProperty(SupportsGet = true, Name = "Page")]
+    [BindProperty(SupportsGet = true, Name = "p")]
     public int PageIndex { get; set; } = 1;
 
     public int TotalPages { get; set; } = 1;
@@ -21,7 +21,7 @@ public class SearchModel(IPostService postService) : PageModel
 
         var list = result.Content!;
         if (PageIndex > list.TotalPages && list.TotalPages > 0)
-            return LocalRedirect($"/Search?query={Query}&page={list.TotalPages}");
+            return LocalRedirect($"/Search?query={Query}&p={list.TotalPages}");
 
         Posts = list.Posts;
         TotalPages = list.TotalPages;
