@@ -39,11 +39,10 @@
                     </ul>
 
                     <div class="mx-auto my-2 my-sm-0" style="width: 100%; max-width: 400px;">
-                        <form class="d-flex" asp-page="/Search" method="get">
-                            <input class="form-control me-2" type="search" name="query" placeholder="Search posts..." aria-label="Search" />
+                        <form class="d-flex" asp-page="/Search" method="get" onsubmit="searchPosts(event, this)">
+                            <input class="form-control me-2 search-posts" type="search" value="@ViewData["SearchQuery"]" name="query" placeholder="Search posts..." aria-label="Search" />
                             <button class="btn btn-outline-primary" type="submit">
                                 <i class="bi bi-search" style="color:currentColor;font-size:1.2rem"></i>
-
                             </button>
                         </form>
                     </div>

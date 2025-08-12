@@ -1,6 +1,7 @@
 ﻿using Markdig;
 using Markdig.SyntaxHighlighting;
 using Post.Api.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Post.Api.Services;
 
@@ -31,6 +32,10 @@ public class MarkdigHtmlGenerator : IHtmlGenerator
 
     public string GenerateHtml(string markdown) => Markdown.ToHtml(markdown ?? string.Empty, _pipeline);
 
-    public string GenerateHtmlForComment(string markdown) => Markdown.ToHtml(markdown ?? string.Empty, _commentPipeline);
+    public string GenerateHtmlForComment(string markdown)
+    {
+        var html = Markdown.ToHtml(markdown ?? string.Empty, _commentPipeline);
+        return Regex.Replace(html, "<img[^>]*>", "", RegexOptions.IgnoreCase);
+    }
 }
 

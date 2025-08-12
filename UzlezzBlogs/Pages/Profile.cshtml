@@ -3,14 +3,17 @@
 @model UzlezzBlogs.Pages.ProfileModel
 @{
     ViewData["Title"] = $"{Model.Profile.UserName} posts | page {Model.PageIndex}";
+
+    var user = HttpContext.GetUser();
+    bool isCurrentUser = user is not null && user.Name == @Model.Profile.UserName;
 }
 
 <div class="container py-5" style="max-width: 800px;">
     <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
+        <div class="card-body text-center @Html.Raw(isCurrentUser ? "comment-avatar" : "")">
             <img src="/avatar/@Model.Profile.UserName"
                  class="rounded-circle mb-3"
-                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;" />
+                 style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6"/>
 
             <h3 class="card-title">@Model.Profile.UserName</h3>
 
@@ -50,10 +53,20 @@
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll(".post-clickable").forEach((el) => {
                 el.addEventListener("click", () => {
-                    const url = el.getAttribute("data-url");
-                    if (url) window.location.href = url;
-                });
-            });
-        });
+                    const url = el.getAttribute("data-url")
+                    if (url) window.location.href = url
+                })
+            })
+        })
     </script>
+    @if (isCurrentUser)
+    {
+    <script>
+        const el = document.querySelector(".comment-avatar")
+        el.addEventListener("click", () =>
+        {
+            if (url) window.location.href = "/Me"
+        })
+    </script>
+    }
 }

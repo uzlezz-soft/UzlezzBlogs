@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Post.Api.Configs;
 using Post.Api.Entities;
@@ -16,6 +17,7 @@ public class PostService(
     IPostUrlGenerator urlGenerator,
     IHtmlGenerator htmlGenerator,
     ILogger<PostService> logger,
+    IMemoryCache memoryCache,
     IMessageBroker messageBroker) : IPostService
 {
     private readonly MainPageConfig _config = config.Value;
@@ -250,5 +252,47 @@ public class PostService(
             .Take(take)
             .Select(x => x.ToPostComment())
             .ToArray();
+    }
+
+    private async Task<PostPreview[]?> SearchPostsByKeyword(string keyword) =>
+        await memoryCache.GetOrCreateAsync($"search:{keyword}", async entry =>
+        {
+            entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
+            return await context.Posts
+                .Where(x => EF.Functions.ILike(x.Title, $"%{keyword}%"))
+                .Select(x => x.ToPostPreview())
+                .ToArrayAsync();
+        });
+
+    private static readonly int MaxSearchKeywords = 16;
+    public async Task<(PostPreview[] posts, int totalPages)> SearchPostsAsync(string query,int page)
+    {
+        HashSet<PostPreview> allPosts = new();
+
+        var keywords = query.Split(' ', MaxSearchKeywords,
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(x => x.ToLower());
+        foreach (var keyword in keywords)
+        {
+            var keywordPosts = await SearchPostsByKeyword(keyword);
+            if (keywordPosts is null) continue;
+
+            foreach (var post in keywordPosts)
+            {
+                allPosts.Add(post);
+            }
+        }
+
+        var count = allPosts.Count;
+        var totalPages = (count + _config.PostsPerPage - 1) / _config.PostsPerPage;
+        page = Math.Max(1, Math.Min(page, totalPages));
+
+        var posts = allPosts
+            .OrderByDescending(post => post.CreatedDate)
+            .Skip((page - 1) * _config.PostsPerPage)
+            .Take(_config.PostsPerPage)
+            .ToArray();
+
+        return (posts, totalPages);
     }
 }

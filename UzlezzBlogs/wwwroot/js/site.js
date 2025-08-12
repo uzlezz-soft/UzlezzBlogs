@@ -35,3 +35,8 @@ document.querySelectorAll('.utc-date-only').forEach(span => {
     });
     span.textContent = formatted;
 });
+
+function searchPosts(e, form) {
+    const query = form.querySelector(".search-posts")
+    if (query == null || query.value.trim() == '') e.preventDefault()
+}

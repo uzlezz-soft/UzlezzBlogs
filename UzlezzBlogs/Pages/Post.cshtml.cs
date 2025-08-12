@@ -18,11 +18,15 @@ public class PostModel(IPostService postService) : PageModel
                 : StatusCode(StatusCodes.Status503ServiceUnavailable);
         Details = details.Content!;
 
-        var comments = await postService.GetPostComments(Details.Id, 0, Details.CommentCount);
-        if (comments.IsSuccessStatusCode)
+        if (Details.CommentCount > 0)
         {
-            Comments = comments.Content!;
+            var comments = await postService.GetPostComments(Details.Id, 0, Details.CommentCount);
+            if (comments.IsSuccessStatusCode)
+            {
+                Comments = comments.Content!;
+            }
         }
+        else Comments = [];
 
         return Page();
     }

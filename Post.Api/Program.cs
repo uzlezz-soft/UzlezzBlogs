@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Post.Api;
 using Post.Api.Configs;
 using Post.Api.Interfaces;
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureMessageBroker(builder.Configuration);
+
+builder.Services.AddMemoryCache();
 
 builder.Services.ConfigureDatabaseContext<PostDbContext>(builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddJwtAuth(builder.Configuration);
@@ -133,6 +136,12 @@ app.MapPost("/edit", [Authorize] async (IPostService postService, HttpContext co
 
     return await postService.EditPostAsync(userId!, request.Id, request.Description, request.Content)
         ? Results.Ok() : Results.BadRequest();
+});
+
+app.MapGet("/search", async (IPostService postService, [FromQuery(Name = "q")] string query, [FromQuery] int page = 1) =>
+{
+    var (posts, totalPages) = await postService.SearchPostsAsync(query, page);
+    return Results.Ok(new PostPreviewList(posts, totalPages));
 });
 
 app.Run();

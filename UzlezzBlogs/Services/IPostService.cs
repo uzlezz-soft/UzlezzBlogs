@@ -30,4 +30,7 @@ public interface IPostService
     Task<IApiResponse<PostPreview>> CreatePost([Body] PostCreateRequest request, [Authorize] string token);
     [Post("/post/edit")]
     Task<IApiResponse> EditPost([Body] PostEditRequest request, [Authorize] string token);
+
+    [Get("/post/search")]
+    Task<IApiResponse<PostPreviewList>> SearchPosts([AliasAs("q")] string query, int page);
 }

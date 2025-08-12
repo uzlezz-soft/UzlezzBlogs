@@ -16,4 +16,5 @@ public interface IPostService
     Task<bool> EditPostAsync(string userId, string id, string description, string content);
     Task<int> GetPostCountAsync();
     string PreviewHtml(string content);
+    Task<(PostPreview[] posts, int totalPages)> SearchPostsAsync(string query, int page);
 }

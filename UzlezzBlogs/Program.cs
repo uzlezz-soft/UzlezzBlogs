@@ -43,7 +43,7 @@ app.UseStaticFiles(new StaticFileOptions()
 {
     OnPrepareResponse = ctx =>
     {
-        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=86400");
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
     }
 });
 

@@ -19,7 +19,7 @@ namespace UzlezzBlogs.Pages
 
             var list = result.Content!;
             if (PageIndex > list.TotalPages && list.TotalPages > 0)
-                return LocalRedirect($"/?Page={list.TotalPages}");
+                return LocalRedirect($"/?page={list.TotalPages}");
 
             Posts = list.Posts;
             TotalPages = list.TotalPages;

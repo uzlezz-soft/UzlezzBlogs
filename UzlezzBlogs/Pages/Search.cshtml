@@ -1,10 +1,9 @@
 ﻿@page
 @using System.Text
-@using UzlezzBlogs.Pages.Shared
-@using Hydro
-@model IndexModel
+@model UzlezzBlogs.Pages.SearchModel
 @{
-    ViewData["Title"] = $"Latest Posts | Page {Model.PageIndex}";
+    ViewData["Title"] = $"Search `{Model.Query}` | Page {Model.PageIndex}";
+    ViewData["SearchQuery"] = Model.Query;
 
     var description = new StringBuilder();
     foreach (var post in Model.Posts)
@@ -23,7 +22,7 @@
 }
 
 <div class="container py-5" style="max-width: 800px;">
-    <h2 class="text-center">Recent posts</h2>
+    <h2 class="text-center">Search for "@Model.Query"</h2>
     @foreach (var post in Model.Posts)
     {
         <div class="card mb-4 border-bottom shadow-sm rounded post-clickable"
@@ -49,10 +48,9 @@
         </div>
     }
 
-    <pagination
-        page-index="@Model.PageIndex"
-        total-pages="@Model.TotalPages"
-        generate-url="@((page) => $"/?Page={page}")" />
+    <pagination page-index="@Model.PageIndex"
+                total-pages="@Model.TotalPages"
+                generate-url="@((page) => $"/?query={Model.Query}&page={page}")" />
 </div>
 
 @section Scripts {
