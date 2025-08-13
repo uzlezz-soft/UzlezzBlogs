@@ -1,4 +1,5 @@
 ﻿@page "{userName}"
+@using Hydro
 @using UzlezzBlogs.Pages.Shared
 @inject IMetaDescriptionBuilder DescriptionBuilder
 @model UzlezzBlogs.Pages.ProfileModel
@@ -7,6 +8,12 @@
 
     var user = HttpContext.GetUser();
     bool isCurrentUser = user is not null && user.Name == @Model.Profile.UserName;
+
+    if (HttpContext.IsHydro())
+    {
+        Layout = null;
+        this.HydroTarget("#main-content", ViewData["Title"]!.ToString());
+    }
 }
 
 @section AdditionalMeta {

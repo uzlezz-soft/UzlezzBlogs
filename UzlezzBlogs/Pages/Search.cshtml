@@ -1,9 +1,16 @@
 ﻿@page
+@using Hydro
 @inject IMetaDescriptionBuilder DescriptionBuilder
 @model UzlezzBlogs.Pages.SearchModel
 @{
     ViewData["Title"] = $"Search `{Model.Query}` | Page {Model.PageIndex}";
     ViewData["SearchQuery"] = Model.Query;
+
+    if (HttpContext.IsHydro())
+    {
+        Layout = null;
+        this.HydroTarget("#main-content", ViewData["Title"]!.ToString());
+    }
 }
 
 @section AdditionalMeta {

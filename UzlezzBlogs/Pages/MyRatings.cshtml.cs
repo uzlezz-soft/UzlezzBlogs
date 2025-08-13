@@ -2,9 +2,10 @@ using UzlezzBlogs.Core.Dto;
 
 namespace UzlezzBlogs.Pages;
 
-public class IndexModel(IPostService postService) : PageModel
+[RequestAuth]
+public class MyRatingsModel(IPostService postService) : PageModel
 {
-    public required PostPreview[] Posts { get; set; }
+    public required RatedPostPreview[] Posts { get; set; }
 
     [BindProperty(SupportsGet = true, Name = "p")]
     public int PageIndex { get; set; } = 1;
@@ -13,12 +14,12 @@ public class IndexModel(IPostService postService) : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var result = await postService.GetLatestPosts(PageIndex);
+        var result = await postService.GetRatedPosts(PageIndex, HttpContext.GetAuthToken()!);
         if (!result.IsSuccessStatusCode) return StatusCode(StatusCodes.Status503ServiceUnavailable);
 
         var list = result.Content!;
         if (PageIndex > list.TotalPages && list.TotalPages > 0)
-            return LocalRedirect($"/?p={list.TotalPages}");
+            return LocalRedirect($"/MyRatings?p={list.TotalPages}");
         
         Posts = list.Posts;
         TotalPages = list.TotalPages;

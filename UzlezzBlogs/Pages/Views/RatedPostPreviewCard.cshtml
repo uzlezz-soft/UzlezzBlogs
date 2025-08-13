@@ -1,4 +1,4 @@
-﻿@model UzlezzBlogs.Pages.Views.PostPreviewCard
+﻿@model UzlezzBlogs.Pages.Views.RatedPostPreviewCard
 
 <div class="card mb-4 border-bottom shadow-sm rounded post-clickable position-relative">
     <a href="/post/@Model.Post.Url" class="stretched-link" aria-label="Read @Model.Post.Title" hydro-link></a>
@@ -15,7 +15,18 @@
                 <avatar user-name="@Model.Post.User" width="32" height="32" add-classes="me-2" />
                 <span>@(Model.Post.User ?? "[deleted]")</span>
             </div>
-            <span class="utc-date-only" data-utc="@Model.Post.CreatedDate.ToString("o")"></span>
+
+            <span>
+                @if (Model.Post.IsUpvote)
+                {
+                    <i class="bi bi-hand-thumbs-up-fill" style="color:currentColor;font-size:1.2rem"></i>
+                }
+                else
+                {
+                    <i class="bi bi-hand-thumbs-down-fill" style="color:currentColor;font-size:1.2rem"></i>
+                }
+                <span class="utc-date-only" data-utc="@Model.Post.CreatedDate.ToString("o")"></span>
+            </span>
         </div>
     </div>
 </div>

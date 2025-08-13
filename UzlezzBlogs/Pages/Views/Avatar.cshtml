@@ -1,5 +1,5 @@
 ﻿@model UzlezzBlogs.Pages.Views.Avatar
 
-<img src="/avatar/@Model.UserName"
+<img src="/avatar/@Model.UserName" alt=""
      class="rounded-circle @Model.AddClasses"
      style="width: @(Model.Width)px; height: @(Model.Height)px; object-fit: cover; @Html.Raw(Model.Border ? "border: 3px solid #dee2e6" : "")" />

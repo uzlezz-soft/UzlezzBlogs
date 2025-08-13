@@ -9,7 +9,7 @@
 <div class="d-flex justify-content-center mt-5">
     <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
         <div class="card-body text-center">
-            <avatar user-name="@user.Name" width="120" height="120" border="true" add-classes="mb-3 user-avatar" />
+            <avatar user-name="@user.Name" width="120" height="120" border="true" add-classes="mb-3 comment-avatar" />
             <h4 class="card-title">@user.Name</h4>
         </div>
 
@@ -31,6 +31,10 @@
 </div>
 
 @section Scripts {
+    <script>
+        const el = document.querySelector(".comment-avatar")
+        el.addEventListener("click", () => window.location.href = "/profile/@user.Name")
+    </script>
     @if (Model.ReCacheAvatar is not null && Model.ReCacheAvatar == true)
     {
         <script>
@@ -42,7 +46,7 @@
             .then(response => response.blob())
             .then(blob => {
                 const objectUrl = URL.createObjectURL(blob)
-                document.querySelector(".user-avatar").src = objectUrl
+                document.querySelector(".comment-avatar").src = objectUrl
             })
 
             alert('Avatar update can take up to 1 hour')

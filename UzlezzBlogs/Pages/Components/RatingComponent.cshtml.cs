@@ -13,7 +13,9 @@ public class RatingComponent(IPostService postService, ILogger<RatingComponent> 
 
     public bool? Rating { get; set; }
 
+    [Transient]
     public int Upvotes { get; set; }
+    [Transient]
     public int Downvotes { get; set; }
 
     public override void Mount()

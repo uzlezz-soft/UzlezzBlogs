@@ -22,7 +22,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Uzlezz[Blogs]</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index" hydro-link>Uzlezz[Blogs]</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -32,10 +32,10 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Create">Post</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Create" hydro-link>Post</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy" hydro-link>Privacy</a>
                         </li>
                     </ul>
 
@@ -52,22 +52,22 @@
                         @if (!Context.IsAuthorized())
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Login" asp-route-returnurl="@Context.Request.Path">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Login" asp-route-returnurl="@Context.Request.Path" hydro-link>Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Register">Register</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Register" hydro-link>Register</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Me">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Me" hydro-link>
                                     <i class="bi bi-person-fill" style="color:currentColor;font-size:1.2rem"></i>
                                     @Context.GetUser()!.Name
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Logout" asp-route-returnurl="@Context.Request.Path">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Logout" asp-route-returnurl="@Context.Request.Path" hydro-link>
                                     <i class="bi bi-door-open-fill" style="color:currentColor;font-size:1.2rem"></i>
                                     Logout
                                 </a>
@@ -78,31 +78,17 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container" id="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    @*<footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @DateTime.UtcNow.Year - UzlezzBlogs -
-            <a asp-area="" asp-page="/Privacy">
-                <i class="bi bi-shield"></i>
-                Privacy
-            </a> |
-            <a href="https://github.com/uzlezz-soft/UzlezzBlogs" target="_blank" rel="noopener noreferrer">
-                <i class="bi bi-github"></i>
-                GitHub
-            </a>
-        </div>
-    </footer>*@
-
     <footer class="border-top footer text-muted">
         <div class="container text-center py-3">
             &copy; @DateTime.UtcNow.Year - UzlezzBlogs
             <span class="mx-3">|</span>
-            <a asp-area="" asp-page="/Privacy" class="text-decoration-none">
+            <a asp-area="" asp-page="/Privacy" class="text-decoration-none" hydro-link>
                 <i class="bi bi-shield"></i>
                 Privacy
             </a>

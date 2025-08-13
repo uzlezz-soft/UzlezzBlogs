@@ -11,32 +11,47 @@ const prefers12Hour = (() => {
     }
 })();
 
-document.querySelectorAll('.utc-date').forEach(span => {
-    const utc = span.dataset.utc;
-    const date = new Date(utc);
-    const formatted = date.toLocaleString(undefined, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: prefers12Hour
+function processDates() {
+    document.querySelectorAll('.utc-date').forEach(span => {
+        const utc = span.dataset.utc;
+        const date = new Date(utc);
+        const formatted = date.toLocaleString(undefined, {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: prefers12Hour
+        });
+        span.textContent = formatted;
+        span.classList.remove('utc-date');
     });
-    span.textContent = formatted;
-});
 
-document.querySelectorAll('.utc-date-only').forEach(span => {
-    const utc = span.dataset.utc;
-    const date = new Date(utc);
-    const formatted = date.toLocaleDateString(undefined, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
+    document.querySelectorAll('.utc-date-only').forEach(span => {
+        const utc = span.dataset.utc;
+        const date = new Date(utc);
+        const formatted = date.toLocaleDateString(undefined, {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        span.textContent = formatted;
+        span.classList.remove('utc-date-only');
     });
-    span.textContent = formatted;
-});
+}
 
 function searchPosts(e, form) {
     const query = form.querySelector(".search-posts")
-    if (query == null || query.value.trim() == '') e.preventDefault()
+    if (query == null || query.value.trim() == '') {
+        e.preventDefault()
+        window.location = "/"
+    }
 }
+
+processDates();
+
+const body = document.querySelector("#main-content")
+const observer = new MutationObserver(_ => {
+    processDates()
+})
+observer.observe(body, { childList: true })

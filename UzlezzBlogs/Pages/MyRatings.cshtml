@@ -1,10 +1,10 @@
 ﻿@page
 @using UzlezzBlogs.Pages.Shared
 @using Hydro
-@model IndexModel
+@model MyRatingsModel
 @inject IMetaDescriptionBuilder DescriptionBuilder
 @{
-    ViewData["Title"] = $"Latest Posts | Page {Model.PageIndex}";
+    ViewData["Title"] = $"Rated Posts | Page {Model.PageIndex}";
 
     if (HttpContext.IsHydro())
     {
@@ -13,19 +13,15 @@
     }
 }
 
-@section AdditionalMeta {
-    <meta name="description" content="@ViewData["Title"]@DescriptionBuilder.BuildFromPostPreview(Model.Posts)" />
-}
-
 <div class="container py-5" style="max-width: 800px;">
-    <h2 class="text-center">Recent posts</h2>
+    <h2 class="text-center">Rated posts</h2>
     @foreach (var post in Model.Posts)
     {
-        <post-preview-card post="@post" />
+        <rated-post-preview-card post="@post" />
     }
 
     <pagination
         page-index="@Model.PageIndex"
         total-pages="@Model.TotalPages"
-        generate-url="@((page) => $"/?p={page}")" />
+        generate-url="@((page) => $"/MyRatings?p={page}")" />
 </div>
