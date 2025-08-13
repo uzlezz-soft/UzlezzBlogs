@@ -107,6 +107,23 @@ public class UserService(
         return null;
     }
 
+    public async Task ResendConfirmationEmail(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        logger.LogInformation("{UserName} requested email re-verification", user!.UserName);
+        await messageBroker.Publish(new Notification
+        {
+            TargetUserName = user.UserName,
+            TargetEmail = user.Email,
+            Type = "confirm_email",
+            Parameters = new()
+            {
+                ["token"] = await userManager.GenerateEmailConfirmationTokenAsync(user)
+            }
+        });
+    }
+
     public async Task<string?> SignInWithPasswordAndGetJwtAsync(string userName, string password)
     {
         var result = await signInManager.PasswordSignInAsync(userName, password, false, false);

@@ -68,6 +68,14 @@ app.MapGet("/confirmEmail", [Authorize] async (IUserService userService, HttpCon
     return result ? Results.Ok() : Results.BadRequest();
 });
 
+app.MapPost("/resendEmailConfirmation", [Authorize] async (IUserService userService, HttpContext context) =>
+{
+    var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    await userService.ResendConfirmationEmail(userId!);
+    return Results.Ok();
+});
+
 app.MapGet("/profile/{userName}", async (IUserService userService, [FromRoute] string userName) =>
 {
     var profile = await userService.GetProfileAsync(userName);

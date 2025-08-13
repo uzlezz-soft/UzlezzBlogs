@@ -20,7 +20,7 @@ public class EditModel(IPostService postService) : PageModel
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(int.MaxValue, MinimumLength = 100)]
+    [StringLength(100000, MinimumLength = 100)]
     [BindProperty]
     public string Markdown { get; set; } = string.Empty;
 

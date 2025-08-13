@@ -14,4 +14,5 @@ public interface IUserService
     Task<UserProfileDetails?> GetProfileDetailsAsync(string userId);
     Task<bool> EditProfile(string userId, string description);
     Task UploadAvatar(string userId, Stream stream, string contentType);
+    Task ResendConfirmationEmail(string userId);
 }

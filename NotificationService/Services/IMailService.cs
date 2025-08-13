@@ -2,5 +2,6 @@
 
 public interface IMailService
 {
-    public Task SendEmail(string recipient, string recipientName, string subject, string body, bool isHtml = true);
+    public Task SendEmail(string recipient, string recipientName, string subject,
+        string body, bool isHtml = true, CancellationToken cancellationToken = default);
 }

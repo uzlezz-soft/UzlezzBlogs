@@ -17,6 +17,8 @@ public interface IAuthService
 
     [Get("/auth/confirmEmail")]
     Task<IApiResponse> ConfirmEmail([Query] string token, [Authorize] string authToken);
+    [Post("/auth/resendEmailConfirmation")]
+    Task<IApiResponse> ResendEmailConfirmation([Authorize] string authToken);
 
     [Get("/auth/profile")]
     Task<IApiResponse<UserProfileDetails>> GetProfileDetails([Authorize] string token);

@@ -15,6 +15,8 @@ public class SettingsModel(IAuthService authService) : PageModel
     [BindProperty]
     public IFormFile? AvatarFile { get; set; }
 
+    public bool EmailConfirmed { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         var profile = await authService.GetProfileDetails(HttpContext.GetAuthToken()!);
@@ -24,6 +26,7 @@ public class SettingsModel(IAuthService authService) : PageModel
                 ? BadRequest() : StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
         Description = profile.Content!.Description;
+        EmailConfirmed = profile.Content!.EmailConfirmed;
         return Page();
     }
 

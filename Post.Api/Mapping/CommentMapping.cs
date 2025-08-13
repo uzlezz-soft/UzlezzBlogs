@@ -6,5 +6,5 @@ namespace Post.Api.Mapping;
 public static class CommentMapping
 {
     public static PostComment ToPostComment(this Comment comment)
-        => new PostComment(comment.UserName, comment.Content, comment.CreatedDate);
+        => new(comment.UserName, comment.Content, comment.CreatedDate);
 }

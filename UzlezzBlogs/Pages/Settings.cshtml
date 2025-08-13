@@ -17,6 +17,25 @@
                 @Html.AntiForgeryToken()
 
                 <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <div class="input-group">
+                        <input type="email" class="form-control" value="@user.CensoredEmail()" readonly />
+
+                        @if (Model.EmailConfirmed)
+                        {
+                            <span class="input-group-text text-success">Confirmed</span>
+                        }
+                        else
+                        {
+                            <span class="input-group-text text-warning">Not Confirmed</span>
+                            <button type="button" id="resendBtn" class="btn btn-outline-primary">
+                                Resend
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Description" class="form-label">Description</label>
                     <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
@@ -40,4 +59,66 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const resendBtn = document.getElementById("resendBtn");
+        const RESEND_KEY = "emailResendTime";
+        const RESEND_DELAY_SECONDS = 60;
+
+        function startCountdown(seconds) {
+            let remaining = seconds;
+
+            function tick() {
+                if (remaining > 0) {
+                    resendBtn.disabled = true;
+                    resendBtn.textContent = `Resend in ${remaining}s`;
+                    remaining--;
+                    setTimeout(tick, 1000);
+                } else {
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = "Resend Confirmation Email";
+                }
+            }
+
+            tick();
+        }
+
+        function checkCooldown() {
+            const lastTime = parseInt(localStorage.getItem(RESEND_KEY) || "0", 10);
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - lastTime;
+
+            if (diff < RESEND_DELAY_SECONDS) {
+                startCountdown(RESEND_DELAY_SECONDS - diff);
+            }
+        }
+
+        resendBtn?.addEventListener("click", async () => {
+            resendBtn.disabled = true;
+            resendBtn.textContent = "Sending...";
+
+            try {
+                const resp = await fetch("/ResendEmailConfirmation", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                if (resp.ok) {
+                    localStorage.setItem(RESEND_KEY, Math.floor(Date.now() / 1000).toString());
+                    startCountdown(RESEND_DELAY_SECONDS);
+                } else {
+                    resendBtn.textContent = "Error";
+                    setTimeout(checkCooldown, 2000);
+                }
+            } catch {
+                resendBtn.textContent = "Error";
+                setTimeout(checkCooldown, 2000);
+            }
+        });
+
+        checkCooldown();
+    </script>
 }

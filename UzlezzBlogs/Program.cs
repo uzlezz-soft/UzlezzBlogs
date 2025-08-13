@@ -1,4 +1,6 @@
 using Hydro.Configuration;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using UzlezzBlogs.Configs;
 using UzlezzBlogs.Core.Configs;
 
@@ -34,6 +36,15 @@ builder.Services.AddRefitClient<IAuthService>()
         c.BaseAddress = new Uri(builder.Configuration["Api:LocalGateway"]!);
     });
 
+builder.Services.AddRateLimiter(_ => _
+    .AddFixedWindowLimiter(policyName: "resend_email_confirmation", options =>
+    {
+        options.PermitLimit = 1;
+        options.Window = TimeSpan.FromSeconds(60);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 1;
+    }));
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -47,6 +58,8 @@ app.UseStaticFiles(new StaticFileOptions()
         ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=2592000");
     }
 });
+
+app.UseRateLimiter();
 
 app.UseRouting();
 app.UseTokenMiddleware();
