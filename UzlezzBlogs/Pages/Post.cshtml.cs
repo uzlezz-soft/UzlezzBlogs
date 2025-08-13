@@ -7,8 +7,18 @@ public class PostModel(IPostService postService) : PageModel
     public required PostDetails Details { get; set; }
     public required PostComment[] Comments { get; set; }
 
+    [BindProperty(Name = "cl", SupportsGet = true)]
+    public int ClearLocalStorage { get; set; } = 0;
+
     public async Task<IActionResult> OnGet(string post)
     {
+        if (ClearLocalStorage == 1)
+        {
+            Details = new PostDetails(string.Empty, string.Empty, string.Empty, post, string.Empty, DateTime.UtcNow,
+                string.Empty, 0, 0, null, 0, 0);
+            return Page();
+        }
+
         var details = await postService.GetPostDetails(post,
             HttpContext.IsAuthorized() ? HttpContext.GetAuthToken() : null);
         if (!details.IsSuccessStatusCode)

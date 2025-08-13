@@ -35,6 +35,6 @@ public class CreateModel(IPostService postService) : PageModel
         var result = await postService.CreatePost(request, HttpContext.GetAuthToken()!);
         if (!result.IsSuccessStatusCode) return StatusCode(StatusCodes.Status503ServiceUnavailable);
 
-        return LocalRedirect($"/post/{result.Content!.Url}");
+        return LocalRedirect($"/post/{result.Content!.Url}?cl=1");
     }
 }

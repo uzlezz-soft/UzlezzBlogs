@@ -8,6 +8,16 @@
     bool downvoted = Model.Details.Rating == false;
 }
 
+@if (Model.ClearLocalStorage == 1)
+{
+    <script>
+        localStorage.removeItem('draftMarkdown');
+        window.location = "/post/@Model.Details.Url";
+    </script>
+}
+else
+{
+
 @section AdditionalMeta {
     <meta name="description" content="@Model.Details.Description">
     <meta name="author" content="@Model.Details.User">
@@ -140,4 +150,5 @@
         </script>
         <script src="~/js/details.js" asp-append-version="true"></script>
     }
+}
 }

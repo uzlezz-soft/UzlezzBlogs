@@ -32,7 +32,7 @@
 
             <div class="col-md-6 col-12 mb-3">
                 <label class="form-label">Preview</label>
-                <div id="markdown-preview" class="border p-3 bg-light rounded" style="min-height: 200px;">
+                <div id="markdown-preview" class="border p-3 bg-light rounded markdown-body" style="min-height: 200px;">
                     <em>Start typing to see preview...</em>
                 </div>
             </div>
@@ -55,7 +55,15 @@
         const input = document.getElementById('markdown-input');
         const preview = document.getElementById('markdown-preview');
 
+        const savedMarkdown = localStorage.getItem('draftMarkdown');
+        if (savedMarkdown !== null) {
+            input.value = savedMarkdown;
+            input.dispatchEvent(new Event('input'));
+        }
+
         input.addEventListener('input', () => {
+            localStorage.setItem('draftMarkdown', input.value);
+
             if (timer) clearTimeout(timer);
 
             timer = setTimeout(() => {
