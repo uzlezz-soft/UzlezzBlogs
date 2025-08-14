@@ -31,6 +31,8 @@ public class MailService(IOptions<MailConfig> config, ILogger<MailService> logge
             await client.ConnectAsync(_config.SmtpHost, _config.SmtpPort, _config.SmtpUseSsl, cancellationToken);
             await client.AuthenticateAsync(_config.SmtpLogin, _config.SmtpPassword, cancellationToken);
             await client.SendAsync(message, cancellationToken);
+
+            logger.LogInformation("Sent message {Subject} to {UserName}", subject, recipientName);
         }
         catch (SmtpCommandException exception)
         {

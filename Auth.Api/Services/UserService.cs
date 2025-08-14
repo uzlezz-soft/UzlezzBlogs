@@ -110,8 +110,9 @@ public class UserService(
     public async Task ResendConfirmationEmail(string userId)
     {
         var user = await userManager.FindByIdAsync(userId);
+        if (user!.EmailConfirmed) return;
 
-        logger.LogInformation("{UserName} requested email re-verification", user!.UserName);
+        logger.LogInformation("{UserName} requested email re-verification", user.UserName);
         await messageBroker.Publish(new Notification
         {
             TargetUserName = user.UserName,

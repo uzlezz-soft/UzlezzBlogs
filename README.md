@@ -1,3 +1,4 @@
+
 # Uzlezz Blogs
 
 .NET 8 ASP.NET Core application. Built using Razor Pages, Hydro, and Refit for Web UI, MinimalAPI PostgreSQL, and RabbitMQ for microservices. It is [live](https://uzlezz.net) right now.
@@ -12,6 +13,16 @@
 - Markdown processing using [Markdig](https://github.com/xoofx/markdig)
 - Email notifications via [Mailkit](https://github.com/jstedfast/MailKit)
 
+
+## Roadmap
+
+- Unit and integration tests
+- Increase Hydro usage to add more interactivity
+- Separate comments from Post microservice
+- Separate avatars from Auth microservice
+- Add more settings like notification on/off
+- Improve notification to not spam on every comment
+- Ability to subscribe to certain publisher and get notifications about new posts
 
 ## Deployment
 

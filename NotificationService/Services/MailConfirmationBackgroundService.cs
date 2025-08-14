@@ -1,4 +1,6 @@
-﻿using NotificationService.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NotificationService.Entities;
+using Npgsql;
 using UzlezzBlogs.Microservices.Shared;
 using UzlezzBlogs.Microservices.Shared.Messages;
 
@@ -16,14 +18,22 @@ public class MailConfirmationBackgroundService(
             using var scope = serviceScopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
 
-            var user = new ConfirmedUser
+            try
             {
-                UserName = message.UserName,
-                Email = message.Email
-            };
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-            logger.LogInformation("User {UserName} confirmed email", user.UserName);
+                var user = new ConfirmedUser
+                {
+                    UserName = message.UserName,
+                    Email = message.Email
+                };
+                await context.Users.AddAsync(user);
+                await context.SaveChangesAsync();
+                logger.LogInformation("User {UserName} confirmed email", user.UserName);
+            }
+            catch (DbUpdateException e)
+            {
+                logger.LogError("User {UserName}: failed to confirm email: {ErrorMessage}",
+                    message.UserName, e.Message);
+            }
         }, stoppingToken);
     }
 }
