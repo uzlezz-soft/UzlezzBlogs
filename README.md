@@ -34,7 +34,7 @@ Each microservice needs it's own database instance. On startup, app will create 
 
 ![Main Page](./images/blogs0.png)
 
-![Search results on mobile](./images/blogs.png)
+![Search results on mobile](./images/blogs1.png)
 
 
 ## 🔗 Links
