@@ -10,7 +10,7 @@
 
 @if (Model.ClearLocalStorage == 1)
 {
-    <script>
+    <script defer>
         localStorage.removeItem('draftMarkdown');
         window.location = "/post/@Model.Details.Url";
     </script>
@@ -130,6 +130,7 @@ else
             </div>
         }
     </div>
+
 </div>
 
 @section Scripts {
@@ -143,6 +144,7 @@ else
                 });
             });
     </script>
+    
     @if (HttpContext.IsAuthorized())
     {
         <script>

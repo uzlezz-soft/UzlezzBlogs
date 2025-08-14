@@ -1,0 +1,37 @@
+﻿@model UzlezzBlogs.Pages.Views.ModalNotification
+
+<div class="modal fade" id="@Model.Name" tabindex="-1" aria-labelledby="@(Model.Name)Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="@(Model.Name)Label">@Model.Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+
+            <div class="modal-body">
+                @Model.Slot()
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Immediate)
+{
+    <script>
+        const modal = new bootstrap.Modal(document.getElementById("@Model.Name"));
+        modal.show();
+    </script>
+}
+else
+{
+    <script defer>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = new bootstrap.Modal(document.getElementById("@Model.Name"));
+        modal.show();
+    });
+    </script>
+}
